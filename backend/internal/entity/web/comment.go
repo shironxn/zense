@@ -6,32 +6,31 @@ import (
 	"github.com/aternity/zense/internal/entity/domain"
 )
 
-type JournalResponse struct {
+type CommentResponse struct {
 	ID         uint                     `json:"id"`
 	UserID     uint                     `json:"user_id"`
-	Mood       domain.JournalMood       `json:"mood"`
+	ForumID    uint                     `json:"forum_id"`
 	Content    string                   `json:"content"`
-	Visibility domain.JournalVisibility `json:"visibility"`
+	Visibility domain.CommentVisibility `json:"comment"`
 	CreatedAt  time.Time                `json:"created_at"`
 	UpdatedAt  time.Time                `json:"updated_at"`
 }
 
-type JournalCreate struct {
+type CommentCreate struct {
 	UserID     uint                     `validate:"required"`
-	Mood       domain.JournalMood       `validate:"required"`
+	ForumID    uint                     `validate:"required"`
 	Content    string                   `validate:"required"`
-	Visibility domain.JournalVisibility `validate:"required"`
+	Visibility domain.CommentVisibility `validate:"required"`
 }
 
-type JournalUpdate struct {
+type CommentUpdate struct {
 	ID         uint `validate:"required"`
 	UserID     uint `validate:"required"`
-	Mood       domain.JournalMood
 	Content    string
-	Visibility domain.JournalVisibility
+	Visibility domain.CommentVisibility
 }
 
-type JournalDelete struct {
+type CommentDelete struct {
 	ID     uint `validate:"required"`
 	UserID uint `validate:"required"`
 }
