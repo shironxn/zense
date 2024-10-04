@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: zense 
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_HOST: localhost 
+      POSTGRES_USER: gorm 
+      POSTGRES_PASSWORD: gorm 
+      POSTGRES_DB: gorm
+
