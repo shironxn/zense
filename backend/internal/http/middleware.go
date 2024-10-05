@@ -1,1 +1,5 @@
 package http
+
+func AuthMiddleware() {
+
+}

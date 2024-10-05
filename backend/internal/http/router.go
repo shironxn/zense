@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/aternity/zense/internal/handler"
+	"github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -23,6 +24,15 @@ func NewRouter(e *echo.Echo, userHandler handler.UserHandler) *Router {
 func (r *Router) Run() http.Handler {
 	r.e.Use(middleware.Logger())
 	r.e.Use(middleware.Recover())
+	r.e.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(""),
+		Skipper: func(c echo.Context) bool {
+			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" {
+				return true
+			}
+			return false
+		},
+	}))
 
 	api := r.e.Group("/api/v1")
 	auth := api.Group("/auth")
