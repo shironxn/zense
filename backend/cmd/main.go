@@ -19,8 +19,9 @@ func main() {
 	if err := config.NewServer(config.Server{
 		Host: cfg.Server.Host,
 		Port: cfg.Server.Port,
+		JWT:  cfg.Server.JWT,
 		DB:   db,
-	}); err != nil {
+	}).Run(); err != nil {
 		logrus.Panic(err.Error())
 	}
 }
