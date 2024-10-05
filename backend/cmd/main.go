@@ -11,7 +11,7 @@ func main() {
 		logrus.Panic(err.Error())
 	}
 
-	db, err := config.NewDatabase(cfg.Database)
+	db, err := config.NewDatabase(cfg.Database).Connection()
 	if err != nil {
 		logrus.Panic(err.Error())
 	}

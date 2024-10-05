@@ -42,7 +42,7 @@ func (u *userService) Login(req web.UserLogin) (*web.UserAuth, error) {
 		return nil, echo.NewHTTPError(http.StatusUnauthorized, "invalid password")
 	}
 
-	token, err := u.jwt.GenerateAccessToken(user.ID)
+	token, err := u.jwt.GenerateToken(user.ID)
 	if err != nil {
 		return nil, err
 	}

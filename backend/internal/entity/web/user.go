@@ -16,9 +16,9 @@ type UserAuth struct {
 }
 
 type UserRegister struct {
-	Name     string `validate:"required"`
+	Name     string `validate:"required,min=4,max=16"`
 	Email    string `validate:"required,email"`
-	Password string `validate:"required"`
+	Password string `validate:"required,min=8,max=32"`
 }
 
 type UserLogin struct {
@@ -32,9 +32,9 @@ type UserFindByID struct {
 
 type UserUpdate struct {
 	ID       uint `param:"id" validate:"required"`
-	Name     string
+  Name     string `validate:"min=4,max=16,omitempty"`
 	Email    string `validate:"email,omitempty"`
-	Password string
+  Password string `validate:"min=8,max=32omitempty"`
 }
 
 type UserDelete struct {

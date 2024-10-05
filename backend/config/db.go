@@ -15,14 +15,25 @@ type Database struct {
 	Port string
 }
 
-func NewDatabase(db Database) (*gorm.DB, error) {
+func NewDatabase(db Database) *Database {
+	return &Database{
+		Host: db.Host,
+		User: db.User,
+		Pass: db.Pass,
+		Name: db.Name,
+		Port: db.Port,
+	}
+}
+
+func (d *Database) Connection() (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
-		db.Host,
-		db.User,
-		db.Pass,
-		db.Name,
-		db.Port,
+		d.Host,
+		d.User,
+		d.Pass,
+		d.Name,
+		d.Port,
 	)
+
 	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
 }

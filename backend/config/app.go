@@ -3,12 +3,13 @@ package config
 import (
 	"os"
 
+	"github.com/aternity/zense/internal/util"
 	"github.com/joho/godotenv"
 )
 
 type App struct {
-	Server
-	Database
+	Server   Server
+	Database Database
 }
 
 func New() (*App, error) {
@@ -20,6 +21,9 @@ func New() (*App, error) {
 		Server: Server{
 			Host: os.Getenv("APP_HOST"),
 			Port: os.Getenv("APP_PORT"),
+			JWT: util.JWT{
+				Secret:  os.Getenv("JWT_SECRET"),
+			},
 		},
 		Database: Database{
 			Host: os.Getenv("DB_HOST"),

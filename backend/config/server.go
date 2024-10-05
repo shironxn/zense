@@ -32,7 +32,7 @@ func NewServer(server Server) *Server {
 func (s *Server) Run() error {
 	e := echo.New()
 
-	jwt := util.NewJWT(s.JWT)
+	jwt := util.NewJWT(s.JWT.Secret)
 	validator := validator.New(validator.WithRequiredStructEnabled())
 
 	userRepository := repository.NewUserRepository(s.DB)

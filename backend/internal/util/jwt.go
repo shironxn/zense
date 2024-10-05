@@ -8,8 +8,7 @@ import (
 )
 
 type JWT struct {
-	Access  string
-	Refresh string
+	Secret string
 }
 
 type Claims struct {
@@ -17,14 +16,13 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func NewJWT(jwt JWT) *JWT {
+func NewJWT(secret string) *JWT {
 	return &JWT{
-		Access:  jwt.Access,
-		Refresh: jwt.Refresh,
+		Secret: secret,
 	}
 }
 
-func (j *JWT) GenerateAccessToken(userID uint) (string, error) {
+func (j *JWT) GenerateToken(userID uint) (string, error) {
 	exp := time.Now().Add(10 * time.Minute)
 	claims := Claims{
 		UserID: userID,
@@ -32,18 +30,7 @@ func (j *JWT) GenerateAccessToken(userID uint) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(exp),
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.Access))
-}
-
-func (j *JWT) GenerateRefreshToken(userID uint) (string, error) {
-	exp := time.Now().Add(24 * time.Hour)
-	claims := Claims{
-		UserID: userID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(exp),
-		},
-	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.Refresh))
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.Secret))
 }
 
 func (j *JWT) ValidateToken(token string, secret string) (*Claims, error) {
