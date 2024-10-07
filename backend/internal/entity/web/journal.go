@@ -8,7 +8,7 @@ import (
 
 type JournalResponse struct {
 	ID         uint                     `json:"id"`
-	UserID     uint                     `json:"user_id,omitempty"`
+	UserID     uint                     `json:"user_id"`
 	Mood       domain.JournalMood       `json:"mood,omitempty"`
 	Content    string                   `json:"content,omitempty"`
 	Visibility domain.JournalVisibility `json:"visibility,omitempty"`

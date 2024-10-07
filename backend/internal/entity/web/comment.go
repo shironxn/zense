@@ -10,8 +10,8 @@ type CommentResponse struct {
 	ID         uint                     `json:"id"`
 	UserID     uint                     `json:"user_id"`
 	ForumID    uint                     `json:"forum_id"`
-	Content    string                   `json:"content"`
-	Visibility domain.CommentVisibility `json:"comment"`
+	Content    string                   `json:"content,omitempty"`
+	Visibility domain.CommentVisibility `json:"comment,omitempty"`
 	CreatedAt  *time.Time               `json:"created_at,omitempty"`
 	UpdatedAt  *time.Time               `json:"updated_at,omitempty"`
 }
