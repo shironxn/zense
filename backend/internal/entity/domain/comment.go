@@ -15,7 +15,7 @@ type Comment struct {
 	UserID     uint
 	ForumID    uint
 	Content    string
-	Visibility CommentVisibility `gorm:"type:enum('review', 'public', 'private')"`
+	Visibility CommentVisibility `gorm:"default:'review'" sql:"type:visibility"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

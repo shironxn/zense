@@ -8,23 +8,27 @@ import (
 
 type JournalResponse struct {
 	ID         uint                     `json:"id"`
-	UserID     uint                     `json:"user_id"`
-	Mood       domain.JournalMood       `json:"mood"`
-	Content    string                   `json:"content"`
-	Visibility domain.JournalVisibility `json:"visibility"`
-	CreatedAt  time.Time                `json:"created_at"`
-	UpdatedAt  time.Time                `json:"updated_at"`
+	UserID     uint                     `json:"user_id,omitempty"`
+	Mood       domain.JournalMood       `json:"mood,omitempty"`
+	Content    string                   `json:"content,omitempty"`
+	Visibility domain.JournalVisibility `json:"visibility,omitempty"`
+	CreatedAt  *time.Time               `json:"created_at,omitempty"`
+	UpdatedAt  *time.Time               `json:"updated_at,omitempty"`
 }
 
 type JournalCreate struct {
-	UserID     uint                     `validate:"required"`
-	Mood       domain.JournalMood       `validate:"required"`
-	Content    string                   `validate:"required"`
-	Visibility domain.JournalVisibility `validate:"required"`
+	UserID     uint               `validate:"required"`
+	Mood       domain.JournalMood `validate:"required"`
+	Content    string             `validate:"required"`
+	Visibility domain.JournalVisibility
+}
+
+type JournalFindByID struct {
+	ID uint `param:"id" validate:"required"`
 }
 
 type JournalUpdate struct {
-	ID         uint `validate:"required"`
+	ID         uint `param:"id" validate:"required"`
 	UserID     uint `validate:"required"`
 	Mood       domain.JournalMood
 	Content    string
@@ -32,6 +36,6 @@ type JournalUpdate struct {
 }
 
 type JournalDelete struct {
-	ID     uint `validate:"required"`
+	ID     uint `param:"id" validate:"required"`
 	UserID uint `validate:"required"`
 }

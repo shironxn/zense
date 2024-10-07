@@ -26,6 +26,7 @@ func NewServer(server Server) *Server {
 		Host: server.Host,
 		Port: server.Port,
 		DB:   server.DB,
+		JWT:  server.JWT,
 	}
 }
 
@@ -36,10 +37,22 @@ func (s *Server) Run() error {
 	validator := validator.New(validator.WithRequiredStructEnabled())
 
 	userRepository := repository.NewUserRepository(s.DB)
-	userService := service.NewUserService(userRepository, *jwt)
+	userService := service.NewUserService(userRepository, jwt)
 	userHandler := handler.NewUserHandler(userService, validator)
 
-	router := https.NewRouter(e, userHandler)
+	journalRepository := repository.NewJournalRepository(s.DB)
+	journalService := service.NewJournalService(journalRepository)
+	journalHandler := handler.NewJournalHandler(journalService, validator)
+
+	forumRepository := repository.NewForumRepository(s.DB)
+	forumService := service.NewForumService(forumRepository)
+	forumHandler := handler.NewForumHandler(forumService, validator)
+
+	commentRepository := repository.NewCommentRepository(s.DB)
+	commentService := service.NewCommentService(commentRepository)
+	commentHandler := handler.NewCommentHandler(commentService, validator)
+
+	router := https.NewRouter(e, jwt, userHandler, journalHandler, forumHandler, commentHandler)
 
 	s.DB.AutoMigrate(&domain.User{}, &domain.Journal{}, &domain.Forum{}, &domain.Comment{})
 

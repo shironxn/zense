@@ -21,9 +21,9 @@ const (
 type Journal struct {
 	ID         uint
 	UserID     uint
-	Mood       JournalMood `gorm:"type:enum('happy','good','normal','sad','angry')"`
+	Mood       JournalMood `gorm:"default:'normal'" sql:"type:mood"`
 	Content    string
-	Visibility JournalVisibility `gorm:"type:enum('private','public')"`
+	Visibility JournalVisibility `gorm:"default:'private'" sql:"type:visibility"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

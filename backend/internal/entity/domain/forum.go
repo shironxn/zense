@@ -14,7 +14,7 @@ type Forum struct {
 	ID        uint
 	UserID    uint
 	Title     string
-	Topic     ForumTopic `gorm:"type:enum('topic1','topic2','topic3')"`
+	Topic     ForumTopic `gorm:"default:'topic1'" sql:"type:topic"`
 	Content   string
 	CreatedAt time.Time
 	UpdatedAt time.Time

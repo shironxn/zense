@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type JournalHandler interface {
+type CommentHandler interface {
 	Create(c echo.Context) error
 	FindAll(c echo.Context) error
 	FindByID(c echo.Context) error
@@ -20,33 +20,33 @@ type JournalHandler interface {
 	Delete(c echo.Context) error
 }
 
-type journalHandler struct {
-	service   service.JournalService
+type commentHandler struct {
+	service   service.CommentService
 	validator *validator.Validate
 }
 
-func NewJournalHandler(service service.JournalService, validator *validator.Validate) JournalHandler {
-	return &journalHandler{
+func NewCommentHandler(service service.CommentService, validator *validator.Validate) CommentHandler {
+	return &commentHandler{
 		service:   service,
 		validator: validator,
 	}
 }
 
-func (j *journalHandler) Create(ctx echo.Context) error {
-	req := new(web.JournalCreate)
+func (c *commentHandler) Create(ctx echo.Context) error {
+	req := new(web.CommentCreate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	user := ctx.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-  req.UserID = uint(claims["user_id"].(float64))
+	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := c.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := j.service.Create(*req)
+	data, err := c.service.Create(*req)
 	if err != nil {
 		return err
 	}
@@ -54,11 +54,11 @@ func (j *journalHandler) Create(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, data)
 }
 
-func (j *journalHandler) FindAll(ctx echo.Context) error {
-	data, err := j.service.FindAll()
+func (c *commentHandler) FindAll(ctx echo.Context) error {
+	data, err := c.service.FindAll()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, "journals not found")
+			return echo.NewHTTPError(http.StatusNotFound, "comments not found")
 		}
 
 		return err
@@ -67,20 +67,20 @@ func (j *journalHandler) FindAll(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
-func (j *journalHandler) FindByID(ctx echo.Context) error {
-	req := new(web.JournalFindByID)
+func (c *commentHandler) FindByID(ctx echo.Context) error {
+	req := new(web.CommentFindByID)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := c.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := j.service.FindByID(*req)
+	data, err := c.service.FindByID(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, "journal not found")
+			return echo.NewHTTPError(http.StatusNotFound, "comment not found")
 		}
 
 		return err
@@ -89,49 +89,49 @@ func (j *journalHandler) FindByID(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
-func (j *journalHandler) Update(ctx echo.Context) error {
-	req := new(web.JournalUpdate)
-	if err := ctx.Bind(req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	user := ctx.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-  req.UserID = uint(claims["user_id"].(float64))
-
-	if err := j.validator.Struct(req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	data, err := j.service.Update(*req)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, "journal not found")
-		}
-
-		return err
-	}
-
-	return ctx.JSON(http.StatusOK, data)
-}
-
-func (j *journalHandler) Delete(ctx echo.Context) error {
-	req := new(web.JournalDelete)
+func (c *commentHandler) Update(ctx echo.Context) error {
+	req := new(web.CommentUpdate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	user := ctx.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-  req.UserID = uint(claims["user_id"].(float64))
+	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := c.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := j.service.Delete(*req); err != nil {
+	data, err := c.service.Update(*req)
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return echo.NewHTTPError(http.StatusNotFound, "journal not found")
+			return echo.NewHTTPError(http.StatusNotFound, "comment not found")
+		}
+
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, data)
+}
+
+func (c *commentHandler) Delete(ctx echo.Context) error {
+	req := new(web.CommentDelete)
+	if err := ctx.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	user := ctx.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	req.UserID = uint(claims["user_id"].(float64))
+
+	if err := c.validator.Struct(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if err := c.service.Delete(*req); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "comment not found")
 		}
 
 		return err

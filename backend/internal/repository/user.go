@@ -11,7 +11,7 @@ type UserRepository interface {
 	FindByID(id uint) (*domain.User, error)
 	FindByEmail(email string) (*domain.User, error)
 	Update(user *domain.User) (*domain.User, error)
-	Delete(id uint) error
+	Delete(user *domain.User) error
 }
 
 type userRepository struct {
@@ -24,16 +24,16 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-func (u *userRepository) Create(user *domain.User) (*domain.User, error) {
-	if err := u.db.Create(user).Error; err != nil {
+func (r *userRepository) Create(user *domain.User) (*domain.User, error) {
+	if err := r.db.Create(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (u *userRepository) FindAll() ([]domain.User, error) {
+func (r *userRepository) FindAll() ([]domain.User, error) {
 	var users []domain.User
-	if err := u.db.Find(&users).Error; err != nil {
+	if err := r.db.Find(&users).Error; err != nil {
 		return nil, err
 	}
 
@@ -44,29 +44,29 @@ func (u *userRepository) FindAll() ([]domain.User, error) {
 	return users, nil
 }
 
-func (u *userRepository) FindByID(id uint) (*domain.User, error) {
+func (r *userRepository) FindByID(id uint) (*domain.User, error) {
 	var user domain.User
-	if err := u.db.First(&user, id).Error; err != nil {
+	if err := r.db.First(&user, id).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
-func (u *userRepository) FindByEmail(email string) (*domain.User, error) {
+func (r *userRepository) FindByEmail(email string) (*domain.User, error) {
 	var user domain.User
-	if err := u.db.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
-func (u *userRepository) Update(user *domain.User) (*domain.User, error) {
-	if err := u.db.Updates(&user).Error; err != nil {
+func (r *userRepository) Update(user *domain.User) (*domain.User, error) {
+	if err := r.db.Updates(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (u *userRepository) Delete(id uint) error {
-	return u.db.Delete(&domain.User{}, id).Error
+func (r *userRepository) Delete(user *domain.User) error {
+	return r.db.Delete(user).Error
 }

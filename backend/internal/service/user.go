@@ -22,29 +22,29 @@ type UserService interface {
 
 type userService struct {
 	repository repository.UserRepository
-	jwt        util.JWT
+	jwt        *util.JWT
 }
 
-func NewUserService(repository repository.UserRepository, jwt util.JWT) UserService {
+func NewUserService(repository repository.UserRepository, jwt *util.JWT) UserService {
 	return &userService{
 		repository: repository,
 		jwt:        jwt,
 	}
 }
 
-func (u *userService) Login(req web.UserLogin) (*web.UserAuth, error) {
-	user, err := u.repository.FindByEmail(req.Email)
+func (s *userService) Login(req web.UserLogin) (*web.UserAuth, error) {
+	user, err := s.repository.FindByEmail(req.Email)
 	if err != nil {
-		return nil, err
+		return nil, echo.NewHTTPError(http.StatusUnauthorized, "user not found")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		return nil, echo.NewHTTPError(http.StatusUnauthorized, "invalid password")
 	}
 
-	token, err := u.jwt.GenerateToken(user.ID)
+	token, err := s.jwt.GenerateToken(user.ID)
 	if err != nil {
-		return nil, err
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to generate token")
 	}
 
 	return &web.UserAuth{
@@ -54,19 +54,19 @@ func (u *userService) Login(req web.UserLogin) (*web.UserAuth, error) {
 	}, nil
 }
 
-func (u *userService) Register(req web.UserRegister) (*web.UserResponse, error) {
+func (s *userService) Register(req web.UserRegister) (*web.UserResponse, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to hash password")
 	}
 
-	user, err := u.repository.Create(&domain.User{
+	user, err := s.repository.Create(&domain.User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
 	})
 	if err != nil {
-		return nil, err
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to create user")
 	}
 
 	return &web.UserResponse{
@@ -75,8 +75,8 @@ func (u *userService) Register(req web.UserRegister) (*web.UserResponse, error) 
 	}, nil
 }
 
-func (u *userService) FindAll() ([]web.UserResponse, error) {
-	users, err := u.repository.FindAll()
+func (s *userService) FindAll() ([]web.UserResponse, error) {
+	users, err := s.repository.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +94,8 @@ func (u *userService) FindAll() ([]web.UserResponse, error) {
 	return responses, nil
 }
 
-func (u *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) {
-	user, err := u.repository.FindByID(req.ID)
+func (s *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) {
+	user, err := s.repository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (u *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) 
 	}, nil
 }
 
-func (u *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
+func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 	if req.Password != "" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 		if err != nil {
@@ -117,20 +117,31 @@ func (u *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 		req.Password = string(hashedPassword)
 	}
 
-	user, err := u.repository.Update(&domain.User{ID: req.ID, Name: req.Name, Email: req.Email, Password: req.Password})
+	user, err := s.repository.Update(&domain.User{
+		ID:       req.ID,
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	return &web.UserResponse{
 		ID:        user.ID,
+		Name:      user.Name,
+		CreatedAt: &user.CreatedAt,
 		UpdatedAt: &user.UpdatedAt,
 	}, nil
 }
 
-func (u *userService) Delete(req web.UserDelete) error {
-	err := u.repository.Delete(req.ID)
+func (s *userService) Delete(req web.UserDelete) error {
+	user, err := s.repository.FindByID(req.ID)
 	if err != nil {
+		return err
+	}
+
+	if err := s.repository.Delete(user); err != nil {
 		return err
 	}
 

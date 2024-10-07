@@ -33,9 +33,9 @@ func NewUserHandler(service service.UserService, validator *validator.Validate) 
 	}
 }
 
-func (u *userHandler) Login(c echo.Context) error {
+func (u *userHandler) Login(ctx echo.Context) error {
 	req := new(web.UserLogin)
-	if err := c.Bind(req); err != nil {
+	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
@@ -52,12 +52,12 @@ func (u *userHandler) Login(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, data)
+	return ctx.JSON(http.StatusOK, data)
 }
 
-func (u *userHandler) Register(c echo.Context) error {
+func (u *userHandler) Register(ctx echo.Context) error {
 	req := new(web.UserRegister)
-	if err := c.Bind(req); err != nil {
+	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
@@ -77,10 +77,10 @@ func (u *userHandler) Register(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, data)
+	return ctx.JSON(http.StatusCreated, data)
 }
 
-func (u *userHandler) FindAll(c echo.Context) error {
+func (u *userHandler) FindAll(ctx echo.Context) error {
 	data, err := u.service.FindAll()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -90,12 +90,12 @@ func (u *userHandler) FindAll(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, data)
+	return ctx.JSON(http.StatusOK, data)
 }
 
-func (u *userHandler) FindByID(c echo.Context) error {
+func (u *userHandler) FindByID(ctx echo.Context) error {
 	req := new(web.UserFindByID)
-	if err := c.Bind(req); err != nil {
+	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
@@ -112,12 +112,12 @@ func (u *userHandler) FindByID(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, data)
+	return ctx.JSON(http.StatusOK, data)
 }
 
-func (u *userHandler) Update(c echo.Context) error {
+func (u *userHandler) Update(ctx echo.Context) error {
 	req := new(web.UserUpdate)
-	if err := c.Bind(req); err != nil {
+	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 
 	}
@@ -135,12 +135,12 @@ func (u *userHandler) Update(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, data)
+	return ctx.JSON(http.StatusOK, data)
 }
 
-func (u *userHandler) Delete(c echo.Context) error {
+func (u *userHandler) Delete(ctx echo.Context) error {
 	req := new(web.UserDelete)
-	if err := c.Bind(req); err != nil {
+	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
@@ -156,5 +156,5 @@ func (u *userHandler) Delete(c echo.Context) error {
 		return err
 	}
 
-	return c.NoContent(http.StatusOK)
+	return ctx.NoContent(http.StatusOK)
 }

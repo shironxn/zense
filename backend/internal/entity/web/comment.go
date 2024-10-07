@@ -12,25 +12,29 @@ type CommentResponse struct {
 	ForumID    uint                     `json:"forum_id"`
 	Content    string                   `json:"content"`
 	Visibility domain.CommentVisibility `json:"comment"`
-	CreatedAt  time.Time                `json:"created_at"`
-	UpdatedAt  time.Time                `json:"updated_at"`
+	CreatedAt  *time.Time               `json:"created_at,omitempty"`
+	UpdatedAt  *time.Time               `json:"updated_at,omitempty"`
+}
+
+type CommentFindByID struct {
+	ID uint `param:"id" validate:"required"`
 }
 
 type CommentCreate struct {
-	UserID     uint                     `validate:"required"`
-	ForumID    uint                     `validate:"required"`
-	Content    string                   `validate:"required"`
-	Visibility domain.CommentVisibility `validate:"required"`
+	UserID     uint   `validate:"required"`
+	ForumID    uint   `validate:"required"`
+	Content    string `validate:"required"`
+	Visibility domain.CommentVisibility
 }
 
 type CommentUpdate struct {
-	ID         uint `validate:"required"`
+	ID         uint `param:"id" validate:"required"`
 	UserID     uint `validate:"required"`
 	Content    string
 	Visibility domain.CommentVisibility
 }
 
 type CommentDelete struct {
-	ID     uint `validate:"required"`
+	ID     uint `param:"id" validate:"required"`
 	UserID uint `validate:"required"`
 }
