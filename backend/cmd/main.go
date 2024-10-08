@@ -7,13 +7,14 @@ import (
 
 //	@title			Zense
 //	@version		1.0
-//	@description Zense API Docs	
+//	@description	Zense API Docs
 //	@host			localhost:8080
 //	@BasePath		/api/v1
 
-// @securityDefinitions.apiKey BearerAuth
-//@in header
-//@name Authorization
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Provide your JWT token here. Example: "Bearer {token}"
 
 func main() {
 	cfg, err := config.New()

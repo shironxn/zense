@@ -69,7 +69,7 @@ func (c *commentHandler) Create(ctx echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{array}	web.CommentResponse
-//	@Security		BearerAuth
+//	@Security		Bearer
 //	@Router			/comments [get]
 func (c *commentHandler) FindAll(ctx echo.Context) error {
 	data, err := c.service.FindAll()
@@ -122,6 +122,7 @@ func (c *commentHandler) FindByID(ctx echo.Context) error {
 //	@Param			id		path		int					true	"Comment ID"
 //	@Param			comment	body		web.CommentUpdate	true	"Updated Comment Data"
 //	@Success		200		{object}	web.CommentResponse
+//	@Security		BearerAuth
 //	@Router			/comments/{id} [put]
 func (c *commentHandler) Update(ctx echo.Context) error {
 	req := new(web.CommentUpdate)

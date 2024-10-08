@@ -5,6 +5,7 @@ import "time"
 type UserResponse struct {
 	ID        uint       `json:"id"`
 	Name      string     `json:"name,omitempty"`
+	Email     string     `json:"email,omitempty"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
@@ -26,17 +27,23 @@ type UserLogin struct {
 	Password string `validate:"required"`
 }
 
+type UserFindMe struct {
+	ID uint `validate:"required"`
+}
+
 type UserFindByID struct {
 	ID uint `param:"id" validate:"required"`
 }
 
 type UserUpdate struct {
-	ID       uint `param:"id" validate:"required"`
-  Name     string `validate:"min=4,max=16,omitempty"`
-	Email    string `validate:"email,omitempty"`
-  Password string `validate:"min=8,max=32omitempty"`
+	ID       uint `param:"id"`
+	UserID   uint
+	Name     string `validate:"max=16"`
+	Email    string `validate:"omitempty,email"`
+	Password string `validate:"max=32"`
 }
 
 type UserDelete struct {
-	ID uint `param:"id" validate:"required"`
+	ID     uint `param:"id"`
+	UserID uint `validate:"required"`
 }

@@ -87,7 +87,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Retrieve all comments",
@@ -183,6 +183,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a comment",
                 "consumes": [
                     "application/json"
@@ -516,6 +521,50 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
+                "description": "Update an existing journal entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Journal"
+                ],
+                "summary": "Update Journal",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Journal ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated Journal Data",
+                        "name": "journal",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.JournalUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.JournalResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a journal entry",
                 "consumes": [
                     "application/json"
@@ -558,6 +607,31 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/web.UserResponse"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve the details of the currently authenticated user based on the JWT token provided",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.UserResponse"
                         }
                     }
                 }
@@ -623,7 +697,6 @@ const docTemplate = `{
                         "description": "User Update Request",
                         "name": "user",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/web.UserUpdate"
                         }
@@ -920,8 +993,7 @@ const docTemplate = `{
         "web.JournalUpdate": {
             "type": "object",
             "required": [
-                "id",
-                "userID"
+                "id"
             ],
             "properties": {
                 "content": {
@@ -999,6 +1071,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -1012,9 +1087,6 @@ const docTemplate = `{
         },
         "web.UserUpdate": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -1024,18 +1096,21 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "maxLength": 16,
-                    "minLength": 4
+                    "maxLength": 16
                 },
                 "password": {
                     "type": "string",
-                    "minLength": 8
+                    "maxLength": 32
+                },
+                "userID": {
+                    "type": "integer"
                 }
             }
         }
     },
     "securityDefinitions": {
         "BearerAuth": {
+            "description": "Provide your JWT token here. Example: \"Bearer {token}\"",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

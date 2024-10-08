@@ -29,7 +29,7 @@ type JournalFindByID struct {
 
 type JournalUpdate struct {
 	ID         uint `param:"id" validate:"required"`
-	UserID     uint `validate:"required"`
+	UserID     uint
 	Mood       domain.JournalMood
 	Content    string
 	Visibility domain.JournalVisibility

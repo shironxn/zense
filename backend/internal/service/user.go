@@ -14,6 +14,7 @@ import (
 type UserService interface {
 	Login(req web.UserLogin) (*web.UserAuth, error)
 	Register(req web.UserRegister) (*web.UserResponse, error)
+	FindMe(req web.UserFindMe) (*web.UserResponse, error)
 	FindAll() ([]web.UserResponse, error)
 	FindByID(req web.UserFindByID) (*web.UserResponse, error)
 	Update(req web.UserUpdate) (*web.UserResponse, error)
@@ -75,6 +76,21 @@ func (s *userService) Register(req web.UserRegister) (*web.UserResponse, error) 
 	}, nil
 }
 
+func (s *userService) FindMe(req web.UserFindMe) (*web.UserResponse, error) {
+	user, err := s.repository.FindByID(req.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &web.UserResponse{
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		CreatedAt: &user.CreatedAt,
+		UpdatedAt: &user.UpdatedAt,
+	}, nil
+}
+
 func (s *userService) FindAll() ([]web.UserResponse, error) {
 	users, err := s.repository.FindAll()
 	if err != nil {
@@ -109,6 +125,15 @@ func (s *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) 
 }
 
 func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
+	user, err := s.repository.FindByID(req.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.ID != req.UserID {
+		return nil, echo.NewHTTPError(http.StatusForbidden, "you do not have permission to update this user")
+	}
+
 	if req.Password != "" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 		if err != nil {
@@ -117,7 +142,7 @@ func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 		req.Password = string(hashedPassword)
 	}
 
-	user, err := s.repository.Update(&domain.User{
+	user, err = s.repository.Update(&domain.User{
 		ID:       req.ID,
 		Name:     req.Name,
 		Email:    req.Email,
@@ -137,6 +162,15 @@ func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 
 func (s *userService) Delete(req web.UserDelete) error {
 	user, err := s.repository.FindByID(req.ID)
+	if err != nil {
+		return err
+	}
+
+	if user.ID != req.UserID {
+		return echo.NewHTTPError(http.StatusForbidden, "you do not have permission to delete this user")
+	}
+
+	user, err = s.repository.FindByID(req.ID)
 	if err != nil {
 		return err
 	}

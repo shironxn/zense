@@ -35,8 +35,12 @@ func (r *Router) Run() http.Handler {
 	r.e.Use(middleware.Logger())
 	r.e.Use(middleware.Recover())
 	r.e.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: []byte(r.jwt.Secret),
+		SigningKey:  []byte(r.jwt.Secret),
+		TokenLookup: "header:Authorization",
 		Skipper: func(c echo.Context) bool {
+			if c.Path() == "/api/v1/users/me" {
+				return false
+			}
 			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" || c.Request().Method == "GET" {
 				return true
 			}
@@ -59,7 +63,6 @@ func (r *Router) Run() http.Handler {
 			},
 			DarkMode: true,
 		})
-
 		if err != nil {
 			return err
 		}
@@ -70,6 +73,7 @@ func (r *Router) Run() http.Handler {
 	auth.POST("/login", r.user.Login)
 	auth.POST("/register", r.user.Register)
 
+	users.GET("/me", r.user.FindMe)
 	users.GET("", r.user.FindAll)
 	users.GET("/:id", r.user.FindByID)
 	users.PUT("/:id", r.user.Update)
