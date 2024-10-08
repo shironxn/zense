@@ -118,6 +118,10 @@ func (u *userHandler) FindMe(ctx echo.Context) error {
 
 	data, err := u.service.FindMe(*req)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "user not found")
+		}
+
 		return err
 	}
 
