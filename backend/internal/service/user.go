@@ -48,11 +48,13 @@ func (s *userService) Login(req web.UserLogin) (*web.UserAuth, error) {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to generate token")
 	}
 
-	return &web.UserAuth{
+	response := &web.UserAuth{
 		ID:    user.ID,
 		Name:  user.Name,
 		Token: token,
-	}, nil
+	}
+
+	return response, nil
 }
 
 func (s *userService) Register(req web.UserRegister) (*web.UserResponse, error) {
@@ -61,19 +63,23 @@ func (s *userService) Register(req web.UserRegister) (*web.UserResponse, error) 
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to hash password")
 	}
 
-	user, err := s.repository.Create(&domain.User{
+	user := &domain.User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
-	})
+	}
+
+	user, err = s.repository.Create(user)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to create user")
 	}
 
-	return &web.UserResponse{
+	response := &web.UserResponse{
 		ID:   user.ID,
 		Name: user.Name,
-	}, nil
+	}
+
+	return response, nil
 }
 
 func (s *userService) FindMe(req web.UserFindMe) (*web.UserResponse, error) {
@@ -82,13 +88,15 @@ func (s *userService) FindMe(req web.UserFindMe) (*web.UserResponse, error) {
 		return nil, err
 	}
 
-	return &web.UserResponse{
+	response := &web.UserResponse{
 		ID:        user.ID,
 		Name:      user.Name,
 		Email:     user.Email,
 		CreatedAt: &user.CreatedAt,
 		UpdatedAt: &user.UpdatedAt,
-	}, nil
+	}
+
+	return response, nil
 }
 
 func (s *userService) FindAll() ([]web.UserResponse, error) {
@@ -116,12 +124,14 @@ func (s *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) 
 		return nil, err
 	}
 
-	return &web.UserResponse{
+	response := &web.UserResponse{
 		ID:        user.ID,
 		Name:      user.Name,
 		CreatedAt: &user.CreatedAt,
 		UpdatedAt: &user.UpdatedAt,
-	}, nil
+	}
+
+	return response, nil
 }
 
 func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
@@ -142,22 +152,26 @@ func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 		req.Password = string(hashedPassword)
 	}
 
-	user, err = s.repository.Update(&domain.User{
+	user = &domain.User{
 		ID:       req.ID,
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
-	})
+	}
+
+	user, err = s.repository.Update(user)
 	if err != nil {
 		return nil, err
 	}
 
-	return &web.UserResponse{
+	response := &web.UserResponse{
 		ID:        user.ID,
 		Name:      user.Name,
 		CreatedAt: &user.CreatedAt,
 		UpdatedAt: &user.UpdatedAt,
-	}, nil
+	}
+
+	return response, nil
 }
 
 func (s *userService) Delete(req web.UserDelete) error {
