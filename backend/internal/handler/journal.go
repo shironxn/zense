@@ -32,6 +32,15 @@ func NewJournalHandler(service service.JournalService, validator *validator.Vali
 	}
 }
 
+//	@Summary		Create Journal
+//	@Description	Create a new journal entry
+//	@Tags			Journal
+//	@Accept			json
+//	@Produce		json
+//	@Param			journal	body		web.JournalCreate	true	"Journal Data"
+//	@Success		201		{object}	web.JournalResponse
+//	@Security		BearerAuth
+//	@Router			/journals [post]
 func (j *journalHandler) Create(ctx echo.Context) error {
 	req := new(web.JournalCreate)
 	if err := ctx.Bind(req); err != nil {
@@ -40,7 +49,7 @@ func (j *journalHandler) Create(ctx echo.Context) error {
 
 	user := ctx.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-  req.UserID = uint(claims["user_id"].(float64))
+	req.UserID = uint(claims["user_id"].(float64))
 
 	if err := j.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -54,6 +63,12 @@ func (j *journalHandler) Create(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, data)
 }
 
+//	@Summary		Get All Journals
+//	@Description	Get all journals
+//	@Tags			Journal
+//	@Produce		json
+//	@Success		200	{array}	web.JournalResponse
+//	@Router			/journals [get]
 func (j *journalHandler) FindAll(ctx echo.Context) error {
 	data, err := j.service.FindAll()
 	if err != nil {
@@ -67,6 +82,14 @@ func (j *journalHandler) FindAll(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Get Journal by ID
+//	@Description	Get journal by its ID
+//	@Tags			Journal
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"Journal ID"
+//	@Success		200	{object}	web.JournalResponse
+//	@Router			/journals/{id} [get]
 func (j *journalHandler) FindByID(ctx echo.Context) error {
 	req := new(web.JournalFindByID)
 	if err := ctx.Bind(req); err != nil {
@@ -89,6 +112,16 @@ func (j *journalHandler) FindByID(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Update Journal
+//	@Description	Update an existing journal entry
+//	@Tags			Journal
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"Journal ID"
+//	@Param			journal	body		web.JournalUpdate	true	"Updated Journal Data"
+//	@Success		200		{object}	web.JournalResponse
+//	@Security		BearerAuth
+//	@Router			/journals/{id} [put]
 func (j *journalHandler) Update(ctx echo.Context) error {
 	req := new(web.JournalUpdate)
 	if err := ctx.Bind(req); err != nil {
@@ -97,7 +130,7 @@ func (j *journalHandler) Update(ctx echo.Context) error {
 
 	user := ctx.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-  req.UserID = uint(claims["user_id"].(float64))
+	req.UserID = uint(claims["user_id"].(float64))
 
 	if err := j.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -115,6 +148,14 @@ func (j *journalHandler) Update(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Delete Journal
+//	@Description	Delete a journal entry
+//	@Tags			Journal
+//	@Accept			json
+//	@Param			id	path	int	true	"Journal ID"
+//	@Success		204
+//	@Security		BearerAuth
+//	@Router			/journals/{id} [put]
 func (j *journalHandler) Delete(ctx echo.Context) error {
 	req := new(web.JournalDelete)
 	if err := ctx.Bind(req); err != nil {
@@ -123,7 +164,7 @@ func (j *journalHandler) Delete(ctx echo.Context) error {
 
 	user := ctx.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-  req.UserID = uint(claims["user_id"].(float64))
+	req.UserID = uint(claims["user_id"].(float64))
 
 	if err := j.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())

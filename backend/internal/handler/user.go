@@ -33,6 +33,14 @@ func NewUserHandler(service service.UserService, validator *validator.Validate) 
 	}
 }
 
+//	@Summary		User login
+//	@Description	Authenticate a user and generate a JWT token
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		web.UserLogin	true	"User Login Request"
+//	@Success		200		{object}	web.UserAuth
+//	@Router			/auth/login [post]
 func (u *userHandler) Login(ctx echo.Context) error {
 	req := new(web.UserLogin)
 	if err := ctx.Bind(req); err != nil {
@@ -55,6 +63,14 @@ func (u *userHandler) Login(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Register a new user
+//	@Description	Register a new user with email and password
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		web.UserRegister	true	"User Register Request"
+//	@Success		201		{object}	web.UserResponse
+//	@Router			/auth/register [post]
 func (u *userHandler) Register(ctx echo.Context) error {
 	req := new(web.UserRegister)
 	if err := ctx.Bind(req); err != nil {
@@ -80,6 +96,12 @@ func (u *userHandler) Register(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, data)
 }
 
+//	@Summary		Get all users
+//	@Description	Retrieve a list of all users
+//	@Tags			Users
+//	@Produce		json
+//	@Success		200	{array}	web.UserResponse
+//	@Router			/users [get]
 func (u *userHandler) FindAll(ctx echo.Context) error {
 	data, err := u.service.FindAll()
 	if err != nil {
@@ -93,6 +115,14 @@ func (u *userHandler) FindAll(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Get user by ID
+//	@Description	Retrieve a user by their ID
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"User ID"
+//	@Success		200	{object}	web.UserResponse
+//	@Router			/users/{id} [get]
 func (u *userHandler) FindByID(ctx echo.Context) error {
 	req := new(web.UserFindByID)
 	if err := ctx.Bind(req); err != nil {
@@ -115,6 +145,16 @@ func (u *userHandler) FindByID(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Update a user
+//	@Description	Update a user's information
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int				true	"User ID"
+//	@Param			user	body		web.UserUpdate	true	"User Update Request"
+//	@Success		200		{object}	web.UserResponse
+//	@Security		BearerAuth
+//	@Router			/users/{id} [put]
 func (u *userHandler) Update(ctx echo.Context) error {
 	req := new(web.UserUpdate)
 	if err := ctx.Bind(req); err != nil {
@@ -138,6 +178,15 @@ func (u *userHandler) Update(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Delete a user
+//	@Description	Delete a user by their ID
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"User ID"
+//	@Success		204
+//	@Security		BearerAuth
+//	@Router			/users/{id} [delete]
 func (u *userHandler) Delete(ctx echo.Context) error {
 	req := new(web.UserDelete)
 	if err := ctx.Bind(req); err != nil {

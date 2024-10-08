@@ -32,6 +32,15 @@ func NewCommentHandler(service service.CommentService, validator *validator.Vali
 	}
 }
 
+//	@Summary		Create a new comment
+//	@Description	Create a comment
+//	@Tags			Comments
+//	@Accept			json
+//	@Produce		json
+//	@Param			comment	body		web.CommentCreate	true	"Comment Data"
+//	@Success		201		{object}	web.CommentResponse
+//	@Security		BearerAuth
+//	@Router			/comments [post]
 func (c *commentHandler) Create(ctx echo.Context) error {
 	req := new(web.CommentCreate)
 	if err := ctx.Bind(req); err != nil {
@@ -54,6 +63,14 @@ func (c *commentHandler) Create(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, data)
 }
 
+//	@Summary		Get all comments
+//	@Description	Retrieve all comments
+//	@Tags			Comments
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}	web.CommentResponse
+//	@Security		BearerAuth
+//	@Router			/comments [get]
 func (c *commentHandler) FindAll(ctx echo.Context) error {
 	data, err := c.service.FindAll()
 	if err != nil {
@@ -67,6 +84,14 @@ func (c *commentHandler) FindAll(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Get a comment by ID
+//	@Description	Retrieve a single comment by ID
+//	@Tags			Comments
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"Comment ID"
+//	@Success		200	{object}	web.CommentResponse
+//	@Router			/comments/{id} [get]
 func (c *commentHandler) FindByID(ctx echo.Context) error {
 	req := new(web.CommentFindByID)
 	if err := ctx.Bind(req); err != nil {
@@ -89,6 +114,15 @@ func (c *commentHandler) FindByID(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Update an existing comment
+//	@Description	Update a comment
+//	@Tags			Comments
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"Comment ID"
+//	@Param			comment	body		web.CommentUpdate	true	"Updated Comment Data"
+//	@Success		200		{object}	web.CommentResponse
+//	@Router			/comments/{id} [put]
 func (c *commentHandler) Update(ctx echo.Context) error {
 	req := new(web.CommentUpdate)
 	if err := ctx.Bind(req); err != nil {
@@ -115,6 +149,15 @@ func (c *commentHandler) Update(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Delete a comment
+//	@Description	Remove a comment by ID
+//	@Tags			Comments
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"Comment ID"
+//	@Success		204
+//	@Security		BearerAuth
+//	@Router			/comments/{id} [delete]
 func (c *commentHandler) Delete(ctx echo.Context) error {
 	req := new(web.CommentDelete)
 	if err := ctx.Bind(req); err != nil {

@@ -5,6 +5,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//	@title			Zense
+//	@version		1.0
+//	@description Zense API Docs	
+//	@host			localhost:8080
+//	@BasePath		/api/v1
+
+// @securityDefinitions.apiKey BearerAuth
+//@in header
+//@name Authorization
+
 func main() {
 	cfg, err := config.New()
 	if err != nil {

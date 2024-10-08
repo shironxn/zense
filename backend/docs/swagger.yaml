@@ -1,0 +1,682 @@
+basePath: /api/v1
+definitions:
+  domain.CommentVisibility:
+    enum:
+    - review
+    - public
+    - private
+    type: string
+    x-enum-varnames:
+    - ReviewComment
+    - PublicComment
+    - PrivateComment
+  domain.ForumTopic:
+    enum:
+    - topic1
+    - topic2
+    - topic3
+    type: string
+    x-enum-varnames:
+    - Topic1
+    - Topic2
+    - Topic3
+  domain.JournalMood:
+    enum:
+    - happy
+    - good
+    - normal
+    - sad
+    - angry
+    type: string
+    x-enum-varnames:
+    - Happy
+    - Good
+    - Normal
+    - Sad
+    - Angry
+  domain.JournalVisibility:
+    enum:
+    - private
+    - public
+    type: string
+    x-enum-varnames:
+    - PrivateJournal
+    - PublicJournal
+  web.CommentCreate:
+    properties:
+      content:
+        type: string
+      forumID:
+        type: integer
+      userID:
+        type: integer
+      visibility:
+        $ref: '#/definitions/domain.CommentVisibility'
+    required:
+    - content
+    - forumID
+    - userID
+    type: object
+  web.CommentResponse:
+    properties:
+      comment:
+        $ref: '#/definitions/domain.CommentVisibility'
+      content:
+        type: string
+      created_at:
+        type: string
+      forum_id:
+        type: integer
+      id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  web.CommentUpdate:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      userID:
+        type: integer
+      visibility:
+        $ref: '#/definitions/domain.CommentVisibility'
+    required:
+    - id
+    - userID
+    type: object
+  web.ForumCreate:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+      topic:
+        $ref: '#/definitions/domain.ForumTopic'
+      userID:
+        type: integer
+    required:
+    - content
+    - title
+    - topic
+    - userID
+    type: object
+  web.ForumResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      topic:
+        $ref: '#/definitions/domain.ForumTopic'
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  web.ForumUpdate:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      topic:
+        $ref: '#/definitions/domain.ForumTopic'
+      userID:
+        type: integer
+    required:
+    - id
+    - userID
+    type: object
+  web.JournalCreate:
+    properties:
+      content:
+        type: string
+      mood:
+        $ref: '#/definitions/domain.JournalMood'
+      userID:
+        type: integer
+      visibility:
+        $ref: '#/definitions/domain.JournalVisibility'
+    required:
+    - content
+    - mood
+    - userID
+    type: object
+  web.JournalResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      mood:
+        $ref: '#/definitions/domain.JournalMood'
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      visibility:
+        $ref: '#/definitions/domain.JournalVisibility'
+    type: object
+  web.JournalUpdate:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      mood:
+        $ref: '#/definitions/domain.JournalMood'
+      userID:
+        type: integer
+      visibility:
+        $ref: '#/definitions/domain.JournalVisibility'
+    required:
+    - id
+    - userID
+    type: object
+  web.UserAuth:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  web.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  web.UserRegister:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 16
+        minLength: 4
+        type: string
+      password:
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  web.UserResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  web.UserUpdate:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        maxLength: 16
+        minLength: 4
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - id
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Zense API Docs
+  title: Zense
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and generate a JWT token
+      parameters:
+      - description: User Login Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/web.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.UserAuth'
+      summary: User login
+      tags:
+      - Users
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with email and password
+      parameters:
+      - description: User Register Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/web.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.UserResponse'
+      summary: Register a new user
+      tags:
+      - Users
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/web.CommentResponse'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get all comments
+      tags:
+      - Comments
+    post:
+      consumes:
+      - application/json
+      description: Create a comment
+      parameters:
+      - description: Comment Data
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/web.CommentCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.CommentResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new comment
+      tags:
+      - Comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Delete a comment
+      tags:
+      - Comments
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a single comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.CommentResponse'
+      summary: Get a comment by ID
+      tags:
+      - Comments
+    put:
+      consumes:
+      - application/json
+      description: Update a comment
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Comment Data
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/web.CommentUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.CommentResponse'
+      summary: Update an existing comment
+      tags:
+      - Comments
+  /forums:
+    get:
+      description: Get all forum posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/web.ForumResponse'
+            type: array
+      summary: Get All Forums
+      tags:
+      - Forum
+    post:
+      consumes:
+      - application/json
+      description: Create a new forum post
+      parameters:
+      - description: Forum Data
+        in: body
+        name: forum
+        required: true
+        schema:
+          $ref: '#/definitions/web.ForumCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.ForumResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Forum
+      tags:
+      - Forum
+  /forums/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a forum post
+      parameters:
+      - description: Forum ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Delete Forum
+      tags:
+      - Forum
+    get:
+      consumes:
+      - application/json
+      description: Get a forum post by ID
+      parameters:
+      - description: Forum ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ForumResponse'
+      summary: Get Forum by ID
+      tags:
+      - Forum
+    put:
+      consumes:
+      - application/json
+      description: Update a forum post
+      parameters:
+      - description: Forum ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated Forum Data
+        in: body
+        name: forum
+        required: true
+        schema:
+          $ref: '#/definitions/web.ForumUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ForumResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Forum
+      tags:
+      - Forum
+  /journals:
+    get:
+      description: Get all journals
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/web.JournalResponse'
+            type: array
+      summary: Get All Journals
+      tags:
+      - Journal
+    post:
+      consumes:
+      - application/json
+      description: Create a new journal entry
+      parameters:
+      - description: Journal Data
+        in: body
+        name: journal
+        required: true
+        schema:
+          $ref: '#/definitions/web.JournalCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.JournalResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Journal
+      tags:
+      - Journal
+  /journals/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get journal by its ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.JournalResponse'
+      summary: Get Journal by ID
+      tags:
+      - Journal
+    put:
+      consumes:
+      - application/json
+      description: Delete a journal entry
+      parameters:
+      - description: Journal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Delete Journal
+      tags:
+      - Journal
+  /users:
+    get:
+      description: Retrieve a list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/web.UserResponse'
+            type: array
+      summary: Get all users
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Delete a user
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.UserResponse'
+      summary: Get user by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Update a user's information
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User Update Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/web.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.UserResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a user
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

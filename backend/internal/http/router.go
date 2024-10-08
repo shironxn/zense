@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/aternity/zense/internal/handler"
 	"github.com/aternity/zense/internal/util"
 	"github.com/labstack/echo-jwt/v4"
@@ -36,7 +37,7 @@ func (r *Router) Run() http.Handler {
 	r.e.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey: r.jwt.Secret,
 		Skipper: func(c echo.Context) bool {
-			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" {
+			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" || c.Path() == "/api/v1/docs" || c.Request().Method == "GET" {
 				return true
 			}
 			return false
@@ -49,6 +50,22 @@ func (r *Router) Run() http.Handler {
 	journals := api.Group("/journals")
 	forums := api.Group("/forums")
 	comments := api.Group("/comments")
+
+	api.GET("/docs", func(c echo.Context) error {
+		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
+			SpecURL: "./docs/swagger.json",
+			CustomOptions: scalar.CustomOptions{
+				PageTitle: "Zense API Docs",
+			},
+			DarkMode: true,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		return c.HTML(http.StatusOK, htmlContent)
+	})
 
 	auth.POST("/login", r.user.Login)
 	auth.POST("/register", r.user.Register)

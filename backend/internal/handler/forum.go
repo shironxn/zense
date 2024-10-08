@@ -32,6 +32,15 @@ func NewForumHandler(service service.ForumService, validator *validator.Validate
 	}
 }
 
+//	@Summary		Create Forum
+//	@Description	Create a new forum post
+//	@Tags			Forum
+//	@Accept			json
+//	@Produce		json
+//	@Param			forum	body		web.ForumCreate	true	"Forum Data"
+//	@Success		201		{object}	web.ForumResponse
+//	@Security		BearerAuth
+//	@Router			/forums [post]
 func (f *forumHandler) Create(ctx echo.Context) error {
 	req := new(web.ForumCreate)
 	if err := ctx.Bind(req); err != nil {
@@ -54,6 +63,12 @@ func (f *forumHandler) Create(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, data)
 }
 
+//	@Summary		Get All Forums
+//	@Description	Get all forum posts
+//	@Tags			Forum
+//	@Produce		json
+//	@Success		200	{array}	web.ForumResponse
+//	@Router			/forums [get]
 func (f *forumHandler) FindAll(ctx echo.Context) error {
 	data, err := f.service.FindAll()
 	if err != nil {
@@ -67,6 +82,14 @@ func (f *forumHandler) FindAll(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Get Forum by ID
+//	@Description	Get a forum post by ID
+//	@Tags			Forum
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Forum ID"
+//	@Success		200	{object}	web.ForumResponse
+//	@Router			/forums/{id} [get]
 func (f *forumHandler) FindByID(ctx echo.Context) error {
 	req := new(web.ForumFindByID)
 	if err := ctx.Bind(req); err != nil {
@@ -89,6 +112,16 @@ func (f *forumHandler) FindByID(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Update Forum
+//	@Description	Update a forum post
+//	@Tags			Forum
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string			true	"Forum ID"
+//	@Param			forum	body		web.ForumUpdate	true	"Updated Forum Data"
+//	@Success		200		{object}	web.ForumResponse
+//	@Security		BearerAuth
+//	@Router			/forums/{id} [put]
 func (f *forumHandler) Update(ctx echo.Context) error {
 	req := new(web.ForumUpdate)
 	if err := ctx.Bind(req); err != nil {
@@ -115,6 +148,14 @@ func (f *forumHandler) Update(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, data)
 }
 
+//	@Summary		Delete Forum
+//	@Description	Delete a forum post
+//	@Tags			Forum
+//	@Accept			json
+//	@Param			id	path	string	true	"Forum ID"
+//	@Success		204
+//	@Security		BearerAuth
+//	@Router			/forums/{id} [delete]
 func (f *forumHandler) Delete(ctx echo.Context) error {
 	req := new(web.ForumDelete)
 	if err := ctx.Bind(req); err != nil {

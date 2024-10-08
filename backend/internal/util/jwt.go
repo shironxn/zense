@@ -23,7 +23,7 @@ func NewJWT(secret string) *JWT {
 }
 
 func (j *JWT) GenerateToken(userID uint) (string, error) {
-	exp := time.Now().Add(10 * time.Minute)
+	exp := time.Now().Add(time.Hour * 72)
 	claims := Claims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
