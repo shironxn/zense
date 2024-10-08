@@ -35,9 +35,9 @@ func (r *Router) Run() http.Handler {
 	r.e.Use(middleware.Logger())
 	r.e.Use(middleware.Recover())
 	r.e.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: r.jwt.Secret,
+		SigningKey: []byte(r.jwt.Secret),
 		Skipper: func(c echo.Context) bool {
-			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" || c.Path() == "/api/v1/docs" || c.Request().Method == "GET" {
+			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" || c.Request().Method == "GET" {
 				return true
 			}
 			return false

@@ -30,6 +30,7 @@ func (j *JWT) GenerateToken(userID uint) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(exp),
 		},
 	}
+
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(j.Secret))
 }
 
