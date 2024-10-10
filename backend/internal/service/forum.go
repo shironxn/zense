@@ -18,20 +18,31 @@ type ForumService interface {
 }
 
 type forumService struct {
-	repository repository.ForumRepository
+	repository      repository.ForumRepository
+	topicRepository repository.TopicRepository
 }
 
-func NewForumService(repository repository.ForumRepository) ForumService {
+func NewForumService(repository repository.ForumRepository, topicRepository repository.TopicRepository) ForumService {
 	return &forumService{
-		repository: repository,
+		repository:      repository,
+		topicRepository: topicRepository,
 	}
 }
 
 func (f *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
+	var topics []domain.Topic
+	for _, topicID := range req.Topics {
+		topic, err := f.topicRepository.FindByID(topicID)
+		if err != nil {
+			return nil, err
+		}
+		topics = append(topics, *topic)
+	}
+
 	forum := &domain.Forum{
 		UserID:  req.UserID,
 		Title:   req.Title,
-		Topic:   req.Topic,
+		Topics:  topics,
 		Content: req.Content,
 	}
 
@@ -40,11 +51,20 @@ func (f *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
 		return nil, err
 	}
 
+	var topicsResponse []web.TopicResponse
+	for _, topic := range forum.Topics {
+		topicsResponse = append(topicsResponse, web.TopicResponse{
+			ID:          topic.ID,
+			Name:        topic.Name,
+			Description: topic.Description,
+		})
+	}
+
 	response := &web.ForumResponse{
 		ID:        forum.ID,
 		UserID:    forum.UserID,
 		Title:     forum.Title,
-		Topic:     forum.Topic,
+		Topics:    topicsResponse,
 		Content:   forum.Content,
 		CreatedAt: &forum.CreatedAt,
 	}
@@ -60,10 +80,19 @@ func (f *forumService) FindAll() ([]web.ForumResponse, error) {
 
 	var responses []web.ForumResponse
 	for _, forum := range forums {
+		var topicsResponse []web.TopicResponse
+		for _, topic := range forum.Topics {
+			topicsResponse = append(topicsResponse, web.TopicResponse{
+				ID:          topic.ID,
+				Name:        topic.Name,
+				Description: topic.Description,
+			})
+		}
+
 		responses = append(responses, web.ForumResponse{
 			ID:        forum.ID,
 			Title:     forum.Title,
-			Topic:     forum.Topic,
+			Topics:    topicsResponse,
 			Content:   forum.Content,
 			CreatedAt: &forum.CreatedAt,
 			UpdatedAt: &forum.UpdatedAt,
@@ -83,10 +112,19 @@ func (f *forumService) FindByID(req web.ForumFindByID) (*web.ForumResponse, erro
 		return nil, err
 	}
 
+	var topics []web.TopicResponse
+	for _, topic := range forum.Topics {
+		topics = append(topics, web.TopicResponse{
+			ID:          topic.ID,
+			Name:        topic.Name,
+			Description: topic.Description,
+		})
+	}
+
 	response := &web.ForumResponse{
 		ID:        forum.ID,
 		Title:     forum.Title,
-		Topic:     forum.Topic,
+		Topics:    topics,
 		Content:   forum.Content,
 		CreatedAt: &forum.CreatedAt,
 		UpdatedAt: &forum.UpdatedAt,
@@ -109,10 +147,19 @@ func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 		return nil, echo.NewHTTPError(http.StatusForbidden, "user does not have permission to update this forum")
 	}
 
+	var topics []domain.Topic
+	for _, topicID := range req.Topics {
+		topic, err := f.topicRepository.FindByID(topicID)
+		if err != nil {
+			return nil, err
+		}
+		topics = append(topics, *topic)
+	}
+
 	forum = &domain.Forum{
 		ID:      req.ID,
 		Title:   req.Title,
-		Topic:   req.Topic,
+		Topics:  topics,
 		Content: req.Content,
 	}
 
@@ -121,11 +168,19 @@ func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 		return nil, err
 	}
 
+	var topicsResponse []web.TopicResponse
+	for _, topic := range forum.Topics {
+		topicsResponse = append(topicsResponse, web.TopicResponse{
+			ID:   topic.ID,
+			Name: topic.Name,
+		})
+	}
+
 	response := &web.ForumResponse{
 		ID:        forum.ID,
 		UserID:    forum.UserID,
 		Title:     forum.Title,
-		Topic:     forum.Topic,
+		Topics:    topicsResponse,
 		Content:   forum.Content,
 		UpdatedAt: &forum.UpdatedAt,
 	}

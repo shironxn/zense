@@ -17,16 +17,26 @@ type Router struct {
 	user    handler.UserHandler
 	journal handler.JournalHandler
 	forum   handler.ForumHandler
+	topic   handler.TopicHandler
 	comment handler.CommentHandler
 }
 
-func NewRouter(e *echo.Echo, jwt *util.JWT, user handler.UserHandler, journal handler.JournalHandler, forum handler.ForumHandler, comment handler.CommentHandler) *Router {
+func NewRouter(
+	e *echo.Echo,
+	jwt *util.JWT,
+	user handler.UserHandler,
+	journal handler.JournalHandler,
+	forum handler.ForumHandler,
+	topic handler.TopicHandler,
+	comment handler.CommentHandler,
+) *Router {
 	return &Router{
 		e:       e,
 		jwt:     jwt,
 		user:    user,
 		journal: journal,
 		forum:   forum,
+		topic:   topic,
 		comment: comment,
 	}
 }
@@ -54,6 +64,7 @@ func (r *Router) Run() http.Handler {
 	journals := api.Group("/journals")
 	forums := api.Group("/forums")
 	comments := api.Group("/comments")
+	topics := api.Group("/topics")
 
 	api.GET("/docs", func(c echo.Context) error {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
@@ -96,6 +107,12 @@ func (r *Router) Run() http.Handler {
 	comments.GET("/:id", r.comment.FindByID)
 	comments.PUT("/:id", r.comment.Update)
 	comments.DELETE("/:id", r.comment.Delete)
+
+	topics.POST("", r.topic.Create)
+	topics.GET("", r.topic.FindAll)
+	topics.GET("/:id", r.topic.FindByID)
+	topics.PUT("/:id", r.topic.Update)
+	topics.DELETE("/:id", r.topic.Delete)
 
 	return r.e
 }

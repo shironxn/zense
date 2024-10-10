@@ -18,10 +18,10 @@ type JournalResponse struct {
 }
 
 type JournalCreate struct {
-	UserID     uint               `json:"user_id"`
-	Mood       domain.JournalMood `validate:"required"`
-	Content    string             `validate:"required"`
-	Visibility domain.JournalVisibility
+	UserID     uint                     `json:"user_id"`
+	Mood       domain.JournalMood       `validate:"required;oneof=happy good normal sad angry"`
+	Content    string                   `validate:"required"`
+	Visibility domain.JournalVisibility `validate:"required;oneof=private public"`
 }
 
 type JournalFindByID struct {
@@ -29,11 +29,11 @@ type JournalFindByID struct {
 }
 
 type JournalUpdate struct {
-	ID         uint `param:"id"`
-	UserID     uint `json:"user_id"`
-	Mood       domain.JournalMood
+	ID         uint               `param:"id"`
+	UserID     uint               `json:"user_id"`
+	Mood       domain.JournalMood `validate:"oneof=happy good normal sad angry"`
 	Content    string
-	Visibility domain.JournalVisibility
+	Visibility domain.JournalVisibility `validate:"oneof=private public"`
 }
 
 type JournalDelete struct {

@@ -22,17 +22,17 @@ type CommentFindByID struct {
 }
 
 type CommentCreate struct {
-	UserID     uint   `json:"user_id"`
-	ForumID    uint   `json:"forum_id" validate:"required"`
-	Content    string `validate:"required"`
-	Visibility domain.CommentVisibility
+	UserID     uint                     `json:"user_id"`
+	ForumID    uint                     `json:"forum_id" validate:"required"`
+	Content    string                   `validate:"required"`
+	Visibility domain.CommentVisibility `validate:"required;oneof=review public private"`
 }
 
 type CommentUpdate struct {
 	ID         uint `param:"id"`
 	UserID     uint `json:"user_id"`
 	Content    string
-	Visibility domain.CommentVisibility
+	Visibility domain.CommentVisibility `validate:"oneof=review public private"`
 }
 
 type CommentDelete struct {
