@@ -77,6 +77,7 @@ func (s *userService) Register(req web.UserRegister) (*web.UserResponse, error) 
 	response := &web.UserResponse{
 		ID:   user.ID,
 		Name: user.Name,
+    CreatedAt: &user.CreatedAt,
 	}
 
 	return response, nil
@@ -167,7 +168,6 @@ func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 	response := &web.UserResponse{
 		ID:        user.ID,
 		Name:      user.Name,
-		CreatedAt: &user.CreatedAt,
 		UpdatedAt: &user.UpdatedAt,
 	}
 

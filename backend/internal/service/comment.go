@@ -123,10 +123,8 @@ func (s *commentService) Update(req web.CommentUpdate) (*web.CommentResponse, er
 	response := &web.CommentResponse{
 		ID:         comment.ID,
 		UserID:     comment.UserID,
-		ForumID:    comment.ForumID,
 		Content:    comment.Content,
 		Visibility: comment.Visibility,
-		CreatedAt:  &comment.CreatedAt,
 		UpdatedAt:  &comment.UpdatedAt,
 	}
 

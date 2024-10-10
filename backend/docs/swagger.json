@@ -798,17 +798,16 @@
             "type": "object",
             "required": [
                 "content",
-                "forumID",
-                "userID"
+                "forum_id"
             ],
             "properties": {
                 "content": {
                     "type": "string"
                 },
-                "forumID": {
+                "forum_id": {
                     "type": "integer"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -837,6 +836,9 @@
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/web.UserResponse"
+                },
                 "user_id": {
                     "type": "integer"
                 }
@@ -844,10 +846,6 @@
         },
         "web.CommentUpdate": {
             "type": "object",
-            "required": [
-                "id",
-                "userID"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -855,7 +853,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -868,8 +866,7 @@
             "required": [
                 "content",
                 "title",
-                "topic",
-                "userID"
+                "topic"
             ],
             "properties": {
                 "content": {
@@ -881,7 +878,7 @@
                 "topic": {
                     "$ref": "#/definitions/domain.ForumTopic"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
@@ -907,6 +904,9 @@
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/web.UserResponse"
+                },
                 "user_id": {
                     "type": "integer"
                 }
@@ -914,10 +914,6 @@
         },
         "web.ForumUpdate": {
             "type": "object",
-            "required": [
-                "id",
-                "userID"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -931,7 +927,7 @@
                 "topic": {
                     "$ref": "#/definitions/domain.ForumTopic"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
@@ -940,8 +936,7 @@
             "type": "object",
             "required": [
                 "content",
-                "mood",
-                "userID"
+                "mood"
             ],
             "properties": {
                 "content": {
@@ -950,7 +945,7 @@
                 "mood": {
                     "$ref": "#/definitions/domain.JournalMood"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -976,6 +971,9 @@
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/web.UserResponse"
+                },
                 "user_id": {
                     "type": "integer"
                 },
@@ -986,9 +984,6 @@
         },
         "web.JournalUpdate": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -999,7 +994,7 @@
                 "mood": {
                     "$ref": "#/definitions/domain.JournalMood"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -1096,7 +1091,7 @@
                     "type": "string",
                     "maxLength": 32
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 }
             }

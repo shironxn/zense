@@ -46,16 +46,15 @@ definitions:
     properties:
       content:
         type: string
-      forumID:
+      forum_id:
         type: integer
-      userID:
+      user_id:
         type: integer
       visibility:
         $ref: '#/definitions/domain.CommentVisibility'
     required:
     - content
-    - forumID
-    - userID
+    - forum_id
     type: object
   web.CommentResponse:
     properties:
@@ -71,6 +70,8 @@ definitions:
         type: integer
       updated_at:
         type: string
+      user:
+        $ref: '#/definitions/web.UserResponse'
       user_id:
         type: integer
     type: object
@@ -80,13 +81,10 @@ definitions:
         type: string
       id:
         type: integer
-      userID:
+      user_id:
         type: integer
       visibility:
         $ref: '#/definitions/domain.CommentVisibility'
-    required:
-    - id
-    - userID
     type: object
   web.ForumCreate:
     properties:
@@ -96,13 +94,12 @@ definitions:
         type: string
       topic:
         $ref: '#/definitions/domain.ForumTopic'
-      userID:
+      user_id:
         type: integer
     required:
     - content
     - title
     - topic
-    - userID
     type: object
   web.ForumResponse:
     properties:
@@ -118,6 +115,8 @@ definitions:
         $ref: '#/definitions/domain.ForumTopic'
       updated_at:
         type: string
+      user:
+        $ref: '#/definitions/web.UserResponse'
       user_id:
         type: integer
     type: object
@@ -131,11 +130,8 @@ definitions:
         type: string
       topic:
         $ref: '#/definitions/domain.ForumTopic'
-      userID:
+      user_id:
         type: integer
-    required:
-    - id
-    - userID
     type: object
   web.JournalCreate:
     properties:
@@ -143,14 +139,13 @@ definitions:
         type: string
       mood:
         $ref: '#/definitions/domain.JournalMood'
-      userID:
+      user_id:
         type: integer
       visibility:
         $ref: '#/definitions/domain.JournalVisibility'
     required:
     - content
     - mood
-    - userID
     type: object
   web.JournalResponse:
     properties:
@@ -164,6 +159,8 @@ definitions:
         $ref: '#/definitions/domain.JournalMood'
       updated_at:
         type: string
+      user:
+        $ref: '#/definitions/web.UserResponse'
       user_id:
         type: integer
       visibility:
@@ -177,12 +174,10 @@ definitions:
         type: integer
       mood:
         $ref: '#/definitions/domain.JournalMood'
-      userID:
+      user_id:
         type: integer
       visibility:
         $ref: '#/definitions/domain.JournalVisibility'
-    required:
-    - id
     type: object
   web.UserAuth:
     properties:
@@ -245,7 +240,7 @@ definitions:
       password:
         maxLength: 32
         type: string
-      userID:
+      user_id:
         type: integer
     type: object
 host: localhost:8080

@@ -127,7 +127,6 @@ func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 		Title:     forum.Title,
 		Topic:     forum.Topic,
 		Content:   forum.Content,
-		CreatedAt: &forum.CreatedAt,
 		UpdatedAt: &forum.UpdatedAt,
 	}
 

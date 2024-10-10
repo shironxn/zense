@@ -8,7 +8,7 @@ import (
 
 type CommentResponse struct {
 	ID         uint                     `json:"id"`
-	ForumID    uint                     `json:"forum_id"`
+	ForumID    uint                     `json:"forum_id,omitempty"`
 	UserID     uint                     `json:"user_id,omitempty"`
 	Content    string                   `json:"content,omitempty"`
 	Visibility domain.CommentVisibility `json:"comment,omitempty"`
@@ -18,24 +18,24 @@ type CommentResponse struct {
 }
 
 type CommentFindByID struct {
-	ID uint `param:"id" validate:"required"`
+	ID uint `param:"id"`
 }
 
 type CommentCreate struct {
-	UserID     uint   `validate:"required"`
-	ForumID    uint   `validate:"required"`
+	UserID     uint   `json:"user_id"`
+	ForumID    uint   `json:"forum_id" validate:"required"`
 	Content    string `validate:"required"`
 	Visibility domain.CommentVisibility
 }
 
 type CommentUpdate struct {
-	ID         uint `param:"id" validate:"required"`
-	UserID     uint `validate:"required"`
+	ID         uint `param:"id"`
+	UserID     uint `json:"user_id"`
 	Content    string
 	Visibility domain.CommentVisibility
 }
 
 type CommentDelete struct {
-	ID     uint `param:"id" validate:"required"`
-	UserID uint `validate:"required"`
+	ID     uint `param:"id"`
+	UserID uint `json:"user_id"`
 }

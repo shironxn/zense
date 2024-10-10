@@ -28,16 +28,16 @@ type UserLogin struct {
 }
 
 type UserFindMe struct {
-	ID uint `validate:"required"`
+	ID uint
 }
 
 type UserFindByID struct {
-	ID uint `param:"id" validate:"required"`
+	ID uint `param:"id"`
 }
 
 type UserUpdate struct {
-	ID       uint `param:"id"`
-	UserID   uint
+	ID       uint   `param:"id"`
+	UserID   uint   `json:"user_id"`
 	Name     string `validate:"max=16"`
 	Email    string `validate:"omitempty,email"`
 	Password string `validate:"max=32"`
@@ -45,5 +45,5 @@ type UserUpdate struct {
 
 type UserDelete struct {
 	ID     uint `param:"id"`
-	UserID uint `validate:"required"`
+	UserID uint `json:"user_id"`
 }

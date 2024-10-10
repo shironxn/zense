@@ -804,17 +804,16 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "content",
-                "forumID",
-                "userID"
+                "forum_id"
             ],
             "properties": {
                 "content": {
                     "type": "string"
                 },
-                "forumID": {
+                "forum_id": {
                     "type": "integer"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -843,6 +842,9 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/web.UserResponse"
+                },
                 "user_id": {
                     "type": "integer"
                 }
@@ -850,10 +852,6 @@ const docTemplate = `{
         },
         "web.CommentUpdate": {
             "type": "object",
-            "required": [
-                "id",
-                "userID"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -861,7 +859,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -874,8 +872,7 @@ const docTemplate = `{
             "required": [
                 "content",
                 "title",
-                "topic",
-                "userID"
+                "topic"
             ],
             "properties": {
                 "content": {
@@ -887,7 +884,7 @@ const docTemplate = `{
                 "topic": {
                     "$ref": "#/definitions/domain.ForumTopic"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
@@ -913,6 +910,9 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/web.UserResponse"
+                },
                 "user_id": {
                     "type": "integer"
                 }
@@ -920,10 +920,6 @@ const docTemplate = `{
         },
         "web.ForumUpdate": {
             "type": "object",
-            "required": [
-                "id",
-                "userID"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -937,7 +933,7 @@ const docTemplate = `{
                 "topic": {
                     "$ref": "#/definitions/domain.ForumTopic"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
@@ -946,8 +942,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "content",
-                "mood",
-                "userID"
+                "mood"
             ],
             "properties": {
                 "content": {
@@ -956,7 +951,7 @@ const docTemplate = `{
                 "mood": {
                     "$ref": "#/definitions/domain.JournalMood"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -982,6 +977,9 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/web.UserResponse"
+                },
                 "user_id": {
                     "type": "integer"
                 },
@@ -992,9 +990,6 @@ const docTemplate = `{
         },
         "web.JournalUpdate": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -1005,7 +1000,7 @@ const docTemplate = `{
                 "mood": {
                     "$ref": "#/definitions/domain.JournalMood"
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
@@ -1102,7 +1097,7 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 32
                 },
-                "userID": {
+                "user_id": {
                     "type": "integer"
                 }
             }
