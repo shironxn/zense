@@ -21,27 +21,27 @@ type JournalHandler interface {
 }
 
 type journalHandler struct {
-	service   service.JournalService
-	validator *validator.Validate
+	journalService service.JournalService
+	validator      *validator.Validate
 }
 
-func NewJournalHandler(service service.JournalService, validator *validator.Validate) JournalHandler {
+func NewJournalHandler(journalService service.JournalService, validator *validator.Validate) JournalHandler {
 	return &journalHandler{
-		service:   service,
-		validator: validator,
+		journalService: journalService,
+		validator:      validator,
 	}
 }
 
 // @Summary		Create Journal
 // @Description	Create a new journal entry
-// @Tags			Journal
+// @Tags			Journals
 // @Accept			json
 // @Produce		json
 // @Param			journal	body		web.JournalCreate	true	"Journal Data"
 // @Success		201		{object}	web.JournalResponse
 // @Security		BearerAuth
 // @Router			/journals [post]
-func (j *journalHandler) Create(ctx echo.Context) error {
+func (h *journalHandler) Create(ctx echo.Context) error {
 	req := new(web.JournalCreate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -51,11 +51,11 @@ func (j *journalHandler) Create(ctx echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := j.service.Create(*req)
+	data, err := h.journalService.Create(*req)
 	if err != nil {
 		return err
 	}
@@ -65,12 +65,12 @@ func (j *journalHandler) Create(ctx echo.Context) error {
 
 // @Summary		Get All Journals
 // @Description	Get all journals
-// @Tags			Journal
+// @Tags			Journals
 // @Produce		json
 // @Success		200	{array}	web.JournalResponse
 // @Router			/journals [get]
-func (j *journalHandler) FindAll(ctx echo.Context) error {
-	data, err := j.service.FindAll()
+func (h *journalHandler) FindAll(ctx echo.Context) error {
+	data, err := h.journalService.FindAll()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "journals not found")
@@ -84,23 +84,23 @@ func (j *journalHandler) FindAll(ctx echo.Context) error {
 
 // @Summary		Get Journal by ID
 // @Description	Get journal by its ID
-// @Tags			Journal
+// @Tags			Journals
 // @Accept			json
 // @Produce		json
 // @Param			id	path		int	true	"Journal ID"
 // @Success		200	{object}	web.JournalResponse
 // @Router			/journals/{id} [get]
-func (j *journalHandler) FindByID(ctx echo.Context) error {
+func (h *journalHandler) FindByID(ctx echo.Context) error {
 	req := new(web.JournalFindByID)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := j.service.FindByID(*req)
+	data, err := h.journalService.FindByID(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "journal not found")
@@ -114,7 +114,7 @@ func (j *journalHandler) FindByID(ctx echo.Context) error {
 
 // @Summary		Update Journal
 // @Description	Update an existing journal entry
-// @Tags			Journal
+// @Tags			Journals
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int					true	"Journal ID"
@@ -122,7 +122,7 @@ func (j *journalHandler) FindByID(ctx echo.Context) error {
 // @Success		200		{object}	web.JournalResponse
 // @Security		BearerAuth
 // @Router			/journals/{id} [put]
-func (j *journalHandler) Update(ctx echo.Context) error {
+func (h *journalHandler) Update(ctx echo.Context) error {
 	req := new(web.JournalUpdate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -132,11 +132,11 @@ func (j *journalHandler) Update(ctx echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := j.service.Update(*req)
+	data, err := h.journalService.Update(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "journal not found")
@@ -150,13 +150,13 @@ func (j *journalHandler) Update(ctx echo.Context) error {
 
 // @Summary		Delete Journal
 // @Description	Delete a journal entry
-// @Tags			Journal
+// @Tags			Journals
 // @Accept			json
 // @Param			id	path	int	true	"Journal ID"
 // @Success		204
 // @Security		BearerAuth
 // @Router			/journals/{id} [delete]
-func (j *journalHandler) Delete(ctx echo.Context) error {
+func (h *journalHandler) Delete(ctx echo.Context) error {
 	req := new(web.JournalDelete)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -166,11 +166,11 @@ func (j *journalHandler) Delete(ctx echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := j.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := j.service.Delete(*req); err != nil {
+	if err := h.journalService.Delete(*req); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "journal not found")
 		}

@@ -1,5 +1,5 @@
 package http
 
-func AuthMiddleware() {
+func NewMiddleware() {
 
 }

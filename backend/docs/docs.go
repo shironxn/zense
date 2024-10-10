@@ -266,7 +266,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Forum"
+                    "Forums"
                 ],
                 "summary": "Get All Forums",
                 "responses": {
@@ -295,7 +295,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Forum"
+                    "Forums"
                 ],
                 "summary": "Create Forum",
                 "parameters": [
@@ -329,7 +329,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Forum"
+                    "Forums"
                 ],
                 "summary": "Get Forum by ID",
                 "parameters": [
@@ -364,7 +364,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Forum"
+                    "Forums"
                 ],
                 "summary": "Update Forum",
                 "parameters": [
@@ -405,7 +405,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Forum"
+                    "Forums"
                 ],
                 "summary": "Delete Forum",
                 "parameters": [
@@ -431,7 +431,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Journal"
+                    "Journals"
                 ],
                 "summary": "Get All Journals",
                 "responses": {
@@ -460,7 +460,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Journal"
+                    "Journals"
                 ],
                 "summary": "Create Journal",
                 "parameters": [
@@ -494,7 +494,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Journal"
+                    "Journals"
                 ],
                 "summary": "Get Journal by ID",
                 "parameters": [
@@ -529,7 +529,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Journal"
+                    "Journals"
                 ],
                 "summary": "Update Journal",
                 "parameters": [
@@ -570,13 +570,178 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Journal"
+                    "Journals"
                 ],
                 "summary": "Delete Journal",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "Journal ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/topics": {
+            "get": {
+                "description": "Get all topics",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Get All Topics",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/web.TopicResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new topic",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Create Topic",
+                "parameters": [
+                    {
+                        "description": "Topic Data",
+                        "name": "topic",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.TopicCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/web.TopicResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/topics/{id}": {
+            "get": {
+                "description": "Get topic by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Get Topic by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Topic ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.TopicResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update an existing topic",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Update Topic",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Topic ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated Topic Data",
+                        "name": "topic",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.TopicUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.TopicResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a topic",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Topics"
+                ],
+                "summary": "Delete Topic",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Topic ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -759,19 +924,6 @@ const docTemplate = `{
                 "PrivateComment"
             ]
         },
-        "domain.ForumTopic": {
-            "type": "string",
-            "enum": [
-                "topic1",
-                "topic2",
-                "topic3"
-            ],
-            "x-enum-varnames": [
-                "Topic1",
-                "Topic2",
-                "Topic3"
-            ]
-        },
         "domain.JournalMood": {
             "type": "string",
             "enum": [
@@ -863,7 +1015,16 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "visibility": {
-                    "$ref": "#/definitions/domain.CommentVisibility"
+                    "enum": [
+                        "review",
+                        "public",
+                        "private"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.CommentVisibility"
+                        }
+                    ]
                 }
             }
         },
@@ -872,7 +1033,7 @@ const docTemplate = `{
             "required": [
                 "content",
                 "title",
-                "topic"
+                "topics"
             ],
             "properties": {
                 "content": {
@@ -881,8 +1042,11 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "topic": {
-                    "$ref": "#/definitions/domain.ForumTopic"
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "user_id": {
                     "type": "integer"
@@ -904,8 +1068,11 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "topic": {
-                    "$ref": "#/definitions/domain.ForumTopic"
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.TopicResponse"
+                    }
                 },
                 "updated_at": {
                     "type": "string"
@@ -930,8 +1097,11 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "topic": {
-                    "$ref": "#/definitions/domain.ForumTopic"
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "user_id": {
                     "type": "integer"
@@ -941,8 +1111,7 @@ const docTemplate = `{
         "web.JournalCreate": {
             "type": "object",
             "required": [
-                "content",
-                "mood"
+                "content"
             ],
             "properties": {
                 "content": {
@@ -998,13 +1167,84 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "mood": {
-                    "$ref": "#/definitions/domain.JournalMood"
+                    "enum": [
+                        "happy",
+                        "good",
+                        "normal",
+                        "sad",
+                        "angry"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.JournalMood"
+                        }
+                    ]
                 },
                 "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
-                    "$ref": "#/definitions/domain.JournalVisibility"
+                    "enum": [
+                        "private",
+                        "public"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.JournalVisibility"
+                        }
+                    ]
+                }
+            }
+        },
+        "web.TopicCreate": {
+            "type": "object",
+            "required": [
+                "description",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "web.TopicResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "web.TopicUpdate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

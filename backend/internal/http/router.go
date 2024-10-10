@@ -12,53 +12,60 @@ import (
 )
 
 type Router struct {
-	e       *echo.Echo
-	jwt     *util.JWT
-	user    handler.UserHandler
-	journal handler.JournalHandler
-	forum   handler.ForumHandler
-	topic   handler.TopicHandler
-	comment handler.CommentHandler
+	e        *echo.Echo
+	jwt      *util.JWT
+	handlers Handlers
+}
+
+type Handlers struct {
+	User    handler.UserHandler
+	Journal handler.JournalHandler
+	Topic   handler.TopicHandler
+	Comment handler.CommentHandler
+	Forum   handler.ForumHandler
 }
 
 func NewRouter(
 	e *echo.Echo,
 	jwt *util.JWT,
-	user handler.UserHandler,
-	journal handler.JournalHandler,
-	forum handler.ForumHandler,
-	topic handler.TopicHandler,
-	comment handler.CommentHandler,
+	handlers Handlers,
 ) *Router {
 	return &Router{
-		e:       e,
-		jwt:     jwt,
-		user:    user,
-		journal: journal,
-		forum:   forum,
-		topic:   topic,
-		comment: comment,
+		e:        e,
+		jwt:      jwt,
+		handlers: handlers,
 	}
 }
 
 func (r *Router) Run() http.Handler {
 	r.e.Use(middleware.Logger())
 	r.e.Use(middleware.Recover())
+	r.setupJWT()
+
+	api := r.e.Group("/api/v1")
+	r.setupRoutes(api)
+
+	return r.e
+}
+
+func (r *Router) setupJWT() {
 	r.e.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(r.jwt.Secret),
 		TokenLookup: "header:Authorization",
 		Skipper: func(c echo.Context) bool {
-			if c.Path() == "/api/v1/users/me" {
-				return false
-			}
-			if c.Path() == "/api/v1/auth/login" || c.Path() == "/api/v1/auth/register" || c.Request().Method == "GET" {
+			switch c.Path() {
+			case "/api/v1/auth/login", "/api/v1/auth/register":
 				return true
+			case "/api/v1/users/me":
+				return false
+			default:
+				return c.Request().Method == http.MethodGet
 			}
-			return false
 		},
 	}))
+}
 
-	api := r.e.Group("/api/v1")
+func (r *Router) setupRoutes(api *echo.Group) {
 	auth := api.Group("/auth")
 	users := api.Group("/users")
 	journals := api.Group("/journals")
@@ -75,44 +82,41 @@ func (r *Router) Run() http.Handler {
 			DarkMode: true,
 		})
 		if err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to load API docs: "+err.Error())
 		}
-
 		return c.HTML(http.StatusOK, htmlContent)
 	})
 
-	auth.POST("/login", r.user.Login)
-	auth.POST("/register", r.user.Register)
+	auth.POST("/login", r.handlers.User.Login)
+	auth.POST("/register", r.handlers.User.Register)
 
-	users.GET("/me", r.user.FindMe)
-	users.GET("", r.user.FindAll)
-	users.GET("/:id", r.user.FindByID)
-	users.PUT("/:id", r.user.Update)
-	users.DELETE("/:id", r.user.Delete)
+	users.GET("/me", r.handlers.User.FindMe)
+	users.GET("", r.handlers.User.FindAll)
+	users.GET("/:id", r.handlers.User.FindByID)
+	users.PUT("/:id", r.handlers.User.Update)
+	users.DELETE("/:id", r.handlers.User.Delete)
 
-	journals.POST("", r.journal.Create)
-	journals.GET("", r.journal.FindAll)
-	journals.GET("/:id", r.journal.FindByID)
-	journals.PUT("/:id", r.journal.Update)
-	journals.DELETE("/:id", r.journal.Delete)
+	journals.POST("", r.handlers.Journal.Create)
+	journals.GET("", r.handlers.Journal.FindAll)
+	journals.GET("/:id", r.handlers.Journal.FindByID)
+	journals.PUT("/:id", r.handlers.Journal.Update)
+	journals.DELETE("/:id", r.handlers.Journal.Delete)
 
-	forums.POST("", r.forum.Create)
-	forums.GET("", r.forum.FindAll)
-	forums.GET("/:id", r.forum.FindByID)
-	forums.PUT("/:id", r.forum.Update)
-	forums.DELETE("/:id", r.forum.Delete)
+	comments.POST("", r.handlers.Comment.Create)
+	comments.GET("", r.handlers.Comment.FindAll)
+	comments.GET("/:id", r.handlers.Comment.FindByID)
+	comments.PUT("/:id", r.handlers.Comment.Update)
+	comments.DELETE("/:id", r.handlers.Comment.Delete)
 
-	comments.POST("", r.comment.Create)
-	comments.GET("", r.comment.FindAll)
-	comments.GET("/:id", r.comment.FindByID)
-	comments.PUT("/:id", r.comment.Update)
-	comments.DELETE("/:id", r.comment.Delete)
+	topics.POST("", r.handlers.Topic.Create)
+	topics.GET("", r.handlers.Topic.FindAll)
+	topics.GET("/:id", r.handlers.Topic.FindByID)
+	topics.PUT("/:id", r.handlers.Topic.Update)
+	topics.DELETE("/:id", r.handlers.Topic.Delete)
 
-	topics.POST("", r.topic.Create)
-	topics.GET("", r.topic.FindAll)
-	topics.GET("/:id", r.topic.FindByID)
-	topics.PUT("/:id", r.topic.Update)
-	topics.DELETE("/:id", r.topic.Delete)
-
-	return r.e
+	forums.POST("", r.handlers.Forum.Create)
+	forums.GET("", r.handlers.Forum.FindAll)
+	forums.GET("/:id", r.handlers.Forum.FindByID)
+	forums.PUT("/:id", r.handlers.Forum.Update)
+	forums.DELETE("/:id", r.handlers.Forum.Delete)
 }

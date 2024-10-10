@@ -20,36 +20,37 @@ type TopicHandler interface {
 }
 
 type topicHandler struct {
-	service   service.TopicService
-	validator *validator.Validate
+	topicService service.TopicService
+	validator    *validator.Validate
 }
 
-func NewTopicHandler(service service.TopicService, validator *validator.Validate) TopicHandler {
+func NewTopicHandler(topicService service.TopicService, validator *validator.Validate) TopicHandler {
 	return &topicHandler{
-		service:   service,
-		validator: validator,
+		topicService: topicService,
+		validator:    validator,
 	}
 }
 
 // @Summary		Create Topic
 // @Description	Create a new topic
-// @Tags			Topic
+// @Tags			Topics
 // @Accept			json
 // @Produce		json
 // @Param			topic	body		web.TopicCreate	true	"Topic Data"
 // @Success		201		{object}	web.TopicResponse
+// @Security		BearerAuth
 // @Router			/topics [post]
-func (t *topicHandler) Create(ctx echo.Context) error {
+func (h *topicHandler) Create(ctx echo.Context) error {
 	req := new(web.TopicCreate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := t.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := t.service.Create(*req)
+	data, err := h.topicService.Create(*req)
 	if err != nil {
 		return err
 	}
@@ -59,12 +60,12 @@ func (t *topicHandler) Create(ctx echo.Context) error {
 
 // @Summary		Get All Topics
 // @Description	Get all topics
-// @Tags			Topic
+// @Tags			Topics
 // @Produce		json
 // @Success		200	{array}	web.TopicResponse
 // @Router			/topics [get]
-func (t *topicHandler) FindAll(ctx echo.Context) error {
-	data, err := t.service.FindAll()
+func (h *topicHandler) FindAll(ctx echo.Context) error {
+	data, err := h.topicService.FindAll()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "topics not found")
@@ -78,23 +79,23 @@ func (t *topicHandler) FindAll(ctx echo.Context) error {
 
 // @Summary		Get Topic by ID
 // @Description	Get topic by its ID
-// @Tags			Topic
+// @Tags			Topics
 // @Accept			json
 // @Produce		json
 // @Param			id	path		int	true	"Topic ID"
 // @Success		200	{object}	web.TopicResponse
 // @Router			/topics/{id} [get]
-func (t *topicHandler) FindByID(ctx echo.Context) error {
+func (h *topicHandler) FindByID(ctx echo.Context) error {
 	req := new(web.TopicFindByID)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := t.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := t.service.FindByID(*req)
+	data, err := h.topicService.FindByID(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "topic not found")
@@ -108,24 +109,25 @@ func (t *topicHandler) FindByID(ctx echo.Context) error {
 
 // @Summary		Update Topic
 // @Description	Update an existing topic
-// @Tags			Topic
+// @Tags			Topics
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int				true	"Topic ID"
 // @Param			topic	body		web.TopicUpdate	true	"Updated Topic Data"
 // @Success		200		{object}	web.TopicResponse
+// @Security		BearerAuth
 // @Router			/topics/{id} [put]
-func (t *topicHandler) Update(ctx echo.Context) error {
+func (h *topicHandler) Update(ctx echo.Context) error {
 	req := new(web.TopicUpdate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := t.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := t.service.Update(*req)
+	data, err := h.topicService.Update(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "topic not found")
@@ -139,22 +141,23 @@ func (t *topicHandler) Update(ctx echo.Context) error {
 
 // @Summary		Delete Topic
 // @Description	Delete a topic
-// @Tags			Topic
+// @Tags			Topics
 // @Accept			json
 // @Param			id	path	int	true	"Topic ID"
 // @Success		204
+// @Security		BearerAuth
 // @Router			/topics/{id} [delete]
-func (t *topicHandler) Delete(ctx echo.Context) error {
+func (h *topicHandler) Delete(ctx echo.Context) error {
 	req := new(web.TopicDelete)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := t.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := t.service.Delete(*req); err != nil {
+	if err := h.topicService.Delete(*req); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "topic not found")
 		}

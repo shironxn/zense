@@ -32,7 +32,7 @@ func (r *forumRepository) Create(forum *domain.Forum) (*domain.Forum, error) {
 
 func (r *forumRepository) FindAll() ([]domain.Forum, error) {
 	var forums []domain.Forum
-	if err := r.db.Preload("User").Find(&forums).Error; err != nil {
+	if err := r.db.Preload("User").Preload("Topics").Find(&forums).Error; err != nil {
 		return nil, err
 	}
 
@@ -59,5 +59,13 @@ func (r *forumRepository) Update(forum *domain.Forum) (*domain.Forum, error) {
 }
 
 func (r *forumRepository) Delete(forum *domain.Forum) error {
-	return r.db.Delete(&forum).Error
+	if err := r.db.Model(&forum).Association("Topics").Clear(); err != nil {
+		return err
+	}
+
+	if err := r.db.Delete(&forum).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

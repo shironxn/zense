@@ -15,21 +15,22 @@ type TopicService interface {
 }
 
 type topicService struct {
-	repository repository.TopicRepository
+	topicRepository repository.TopicRepository
 }
 
-func NewTopicService(repository repository.TopicRepository) TopicService {
+func NewTopicService(topicRepository repository.TopicRepository) TopicService {
 	return &topicService{
-		repository: repository,
+		topicRepository: topicRepository,
 	}
 }
 
 func (s *topicService) Create(req web.TopicCreate) (*web.TopicResponse, error) {
 	topic := &domain.Topic{
 		Name: req.Name,
+    Description: req.Description,
 	}
 
-	topic, err := s.repository.Create(topic)
+	topic, err := s.topicRepository.Create(topic)
 	if err != nil {
 		return nil, err
 	}
@@ -37,13 +38,15 @@ func (s *topicService) Create(req web.TopicCreate) (*web.TopicResponse, error) {
 	response := &web.TopicResponse{
 		ID:   topic.ID,
 		Name: topic.Name,
+    Description: topic.Description,
+    CreatedAt: &topic.CreatedAt,
 	}
 
 	return response, nil
 }
 
 func (s *topicService) FindAll() ([]web.TopicResponse, error) {
-	topics, err := s.repository.FindAll()
+	topics, err := s.topicRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +56,9 @@ func (s *topicService) FindAll() ([]web.TopicResponse, error) {
 		response := web.TopicResponse{
 			ID:   topic.ID,
 			Name: topic.Name,
+      Description: topic.Description,
+      CreatedAt: &topic.CreatedAt,
+      UpdatedAt: &topic.UpdatedAt,
 		}
 		responses = append(responses, response)
 	}
@@ -61,7 +67,7 @@ func (s *topicService) FindAll() ([]web.TopicResponse, error) {
 }
 
 func (s *topicService) FindByID(req web.TopicFindByID) (*web.TopicResponse, error) {
-	topic, err := s.repository.FindByID(req.ID)
+	topic, err := s.topicRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -69,20 +75,27 @@ func (s *topicService) FindByID(req web.TopicFindByID) (*web.TopicResponse, erro
 	response := &web.TopicResponse{
 		ID:   topic.ID,
 		Name: topic.Name,
+    Description: topic.Description,
+    CreatedAt: &topic.CreatedAt,
+    UpdatedAt: &topic.UpdatedAt,
 	}
 
 	return response, nil
 }
 
 func (s *topicService) Update(req web.TopicUpdate) (*web.TopicResponse, error) {
-	topic, err := s.repository.FindByID(req.ID)
+	topic, err := s.topicRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	topic.Name = req.Name
+  topic = &domain.Topic{
+    ID: req.ID,
+    Name: req.Name,
+    Description: req.Description,
+  }
 
-	topic, err = s.repository.Update(topic)
+	topic, err = s.topicRepository.Update(topic)
 	if err != nil {
 		return nil, err
 	}
@@ -90,20 +103,23 @@ func (s *topicService) Update(req web.TopicUpdate) (*web.TopicResponse, error) {
 	response := &web.TopicResponse{
 		ID:   topic.ID,
 		Name: topic.Name,
+    Description: topic.Description,
+    UpdatedAt: &topic.UpdatedAt,
 	}
 
 	return response, nil
 }
 
 func (s *topicService) Delete(req web.TopicDelete) error {
-	topic, err := s.repository.FindByID(req.ID)
+	topic, err := s.topicRepository.FindByID(req.ID)
 	if err != nil {
 		return err
 	}
 
-	if err := s.repository.Delete(topic); err != nil {
+	if err := s.topicRepository.Delete(topic); err != nil {
 		return err
 	}
 
 	return nil
 }
+

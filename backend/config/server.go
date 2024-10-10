@@ -56,7 +56,13 @@ func (s *Server) Run() error {
 	forumService := service.NewForumService(forumRepository, topicRepository)
 	forumHandler := handler.NewForumHandler(forumService, validator)
 
-	router := https.NewRouter(e, jwt, userHandler, journalHandler, forumHandler, topicHandler, commentHandler)
+	router := https.NewRouter(e, jwt, https.Handlers{
+		User:    userHandler,
+		Journal: journalHandler,
+		Topic:   topicHandler,
+		Comment: commentHandler,
+		Forum:   forumHandler,
+	})
 
 	s.DB.AutoMigrate(&domain.User{}, &domain.Journal{}, &domain.Forum{}, &domain.Topic{}, &domain.Comment{})
 

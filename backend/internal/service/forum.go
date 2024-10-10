@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/aternity/zense/internal/entity/domain"
 	"github.com/aternity/zense/internal/entity/web"
 	"github.com/aternity/zense/internal/repository"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 type ForumService interface {
@@ -18,22 +20,25 @@ type ForumService interface {
 }
 
 type forumService struct {
-	repository      repository.ForumRepository
+	forumRepository repository.ForumRepository
 	topicRepository repository.TopicRepository
 }
 
-func NewForumService(repository repository.ForumRepository, topicRepository repository.TopicRepository) ForumService {
+func NewForumService(forumRepository repository.ForumRepository, topicRepository repository.TopicRepository) ForumService {
 	return &forumService{
-		repository:      repository,
+		forumRepository: forumRepository,
 		topicRepository: topicRepository,
 	}
 }
 
-func (f *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
+func (s *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
 	var topics []domain.Topic
 	for _, topicID := range req.Topics {
-		topic, err := f.topicRepository.FindByID(topicID)
+		topic, err := s.topicRepository.FindByID(topicID)
 		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, echo.NewHTTPError(http.StatusNotFound, "topic not found")
+			}
 			return nil, err
 		}
 		topics = append(topics, *topic)
@@ -46,7 +51,7 @@ func (f *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
 		Content: req.Content,
 	}
 
-	forum, err := f.repository.Create(forum)
+	forum, err := s.forumRepository.Create(forum)
 	if err != nil {
 		return nil, err
 	}
@@ -54,9 +59,8 @@ func (f *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
 	var topicsResponse []web.TopicResponse
 	for _, topic := range forum.Topics {
 		topicsResponse = append(topicsResponse, web.TopicResponse{
-			ID:          topic.ID,
-			Name:        topic.Name,
-			Description: topic.Description,
+			ID:   topic.ID,
+			Name: topic.Name,
 		})
 	}
 
@@ -72,8 +76,8 @@ func (f *forumService) Create(req web.ForumCreate) (*web.ForumResponse, error) {
 	return response, nil
 }
 
-func (f *forumService) FindAll() ([]web.ForumResponse, error) {
-	forums, err := f.repository.FindAll()
+func (s *forumService) FindAll() ([]web.ForumResponse, error) {
+	forums, err := s.forumRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -106,8 +110,8 @@ func (f *forumService) FindAll() ([]web.ForumResponse, error) {
 	return responses, nil
 }
 
-func (f *forumService) FindByID(req web.ForumFindByID) (*web.ForumResponse, error) {
-	forum, err := f.repository.FindByID(req.ID)
+func (s *forumService) FindByID(req web.ForumFindByID) (*web.ForumResponse, error) {
+	forum, err := s.forumRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +141,8 @@ func (f *forumService) FindByID(req web.ForumFindByID) (*web.ForumResponse, erro
 	return response, nil
 }
 
-func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
-	forum, err := f.repository.FindByID(req.ID)
+func (s *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
+	forum, err := s.forumRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +153,7 @@ func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 
 	var topics []domain.Topic
 	for _, topicID := range req.Topics {
-		topic, err := f.topicRepository.FindByID(topicID)
+		topic, err := s.topicRepository.FindByID(topicID)
 		if err != nil {
 			return nil, err
 		}
@@ -163,7 +167,7 @@ func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 		Content: req.Content,
 	}
 
-	forum, err = f.repository.Update(forum)
+	forum, err = s.forumRepository.Update(forum)
 	if err != nil {
 		return nil, err
 	}
@@ -188,8 +192,8 @@ func (f *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 	return response, nil
 }
 
-func (f *forumService) Delete(req web.ForumDelete) error {
-	forum, err := f.repository.FindByID(req.ID)
+func (s *forumService) Delete(req web.ForumDelete) error {
+	forum, err := s.forumRepository.FindByID(req.ID)
 	if err != nil {
 		return err
 	}
@@ -198,12 +202,7 @@ func (f *forumService) Delete(req web.ForumDelete) error {
 		return echo.NewHTTPError(http.StatusForbidden, "user does not have permission to update this forum")
 	}
 
-	forum, err = f.repository.FindByID(req.ID)
-	if err != nil {
-		return err
-	}
-
-	if err := f.repository.Delete(forum); err != nil {
+	if err := s.forumRepository.Delete(forum); err != nil {
 		return err
 	}
 

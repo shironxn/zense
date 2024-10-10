@@ -10,16 +10,6 @@ definitions:
     - ReviewComment
     - PublicComment
     - PrivateComment
-  domain.ForumTopic:
-    enum:
-    - topic1
-    - topic2
-    - topic3
-    type: string
-    x-enum-varnames:
-    - Topic1
-    - Topic2
-    - Topic3
   domain.JournalMood:
     enum:
     - happy
@@ -84,7 +74,12 @@ definitions:
       user_id:
         type: integer
       visibility:
-        $ref: '#/definitions/domain.CommentVisibility'
+        allOf:
+        - $ref: '#/definitions/domain.CommentVisibility'
+        enum:
+        - review
+        - public
+        - private
     type: object
   web.ForumCreate:
     properties:
@@ -92,14 +87,16 @@ definitions:
         type: string
       title:
         type: string
-      topic:
-        $ref: '#/definitions/domain.ForumTopic'
+      topics:
+        items:
+          type: integer
+        type: array
       user_id:
         type: integer
     required:
     - content
     - title
-    - topic
+    - topics
     type: object
   web.ForumResponse:
     properties:
@@ -111,8 +108,10 @@ definitions:
         type: integer
       title:
         type: string
-      topic:
-        $ref: '#/definitions/domain.ForumTopic'
+      topics:
+        items:
+          $ref: '#/definitions/web.TopicResponse'
+        type: array
       updated_at:
         type: string
       user:
@@ -128,8 +127,10 @@ definitions:
         type: integer
       title:
         type: string
-      topic:
-        $ref: '#/definitions/domain.ForumTopic'
+      topics:
+        items:
+          type: integer
+        type: array
       user_id:
         type: integer
     type: object
@@ -145,7 +146,6 @@ definitions:
         $ref: '#/definitions/domain.JournalVisibility'
     required:
     - content
-    - mood
     type: object
   web.JournalResponse:
     properties:
@@ -173,11 +173,56 @@ definitions:
       id:
         type: integer
       mood:
-        $ref: '#/definitions/domain.JournalMood'
+        allOf:
+        - $ref: '#/definitions/domain.JournalMood'
+        enum:
+        - happy
+        - good
+        - normal
+        - sad
+        - angry
       user_id:
         type: integer
       visibility:
-        $ref: '#/definitions/domain.JournalVisibility'
+        allOf:
+        - $ref: '#/definitions/domain.JournalVisibility'
+        enum:
+        - private
+        - public
+    type: object
+  web.TopicCreate:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - description
+    - name
+    type: object
+  web.TopicResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  web.TopicUpdate:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
     type: object
   web.UserAuth:
     properties:
@@ -419,7 +464,7 @@ paths:
             type: array
       summary: Get All Forums
       tags:
-      - Forum
+      - Forums
     post:
       consumes:
       - application/json
@@ -442,7 +487,7 @@ paths:
       - BearerAuth: []
       summary: Create Forum
       tags:
-      - Forum
+      - Forums
   /forums/{id}:
     delete:
       consumes:
@@ -461,7 +506,7 @@ paths:
       - BearerAuth: []
       summary: Delete Forum
       tags:
-      - Forum
+      - Forums
     get:
       consumes:
       - application/json
@@ -481,7 +526,7 @@ paths:
             $ref: '#/definitions/web.ForumResponse'
       summary: Get Forum by ID
       tags:
-      - Forum
+      - Forums
     put:
       consumes:
       - application/json
@@ -509,7 +554,7 @@ paths:
       - BearerAuth: []
       summary: Update Forum
       tags:
-      - Forum
+      - Forums
   /journals:
     get:
       description: Get all journals
@@ -524,7 +569,7 @@ paths:
             type: array
       summary: Get All Journals
       tags:
-      - Journal
+      - Journals
     post:
       consumes:
       - application/json
@@ -547,7 +592,7 @@ paths:
       - BearerAuth: []
       summary: Create Journal
       tags:
-      - Journal
+      - Journals
   /journals/{id}:
     delete:
       consumes:
@@ -566,7 +611,7 @@ paths:
       - BearerAuth: []
       summary: Delete Journal
       tags:
-      - Journal
+      - Journals
     get:
       consumes:
       - application/json
@@ -586,7 +631,7 @@ paths:
             $ref: '#/definitions/web.JournalResponse'
       summary: Get Journal by ID
       tags:
-      - Journal
+      - Journals
     put:
       consumes:
       - application/json
@@ -614,7 +659,112 @@ paths:
       - BearerAuth: []
       summary: Update Journal
       tags:
-      - Journal
+      - Journals
+  /topics:
+    get:
+      description: Get all topics
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/web.TopicResponse'
+            type: array
+      summary: Get All Topics
+      tags:
+      - Topics
+    post:
+      consumes:
+      - application/json
+      description: Create a new topic
+      parameters:
+      - description: Topic Data
+        in: body
+        name: topic
+        required: true
+        schema:
+          $ref: '#/definitions/web.TopicCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.TopicResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Topic
+      tags:
+      - Topics
+  /topics/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a topic
+      parameters:
+      - description: Topic ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Delete Topic
+      tags:
+      - Topics
+    get:
+      consumes:
+      - application/json
+      description: Get topic by its ID
+      parameters:
+      - description: Topic ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.TopicResponse'
+      summary: Get Topic by ID
+      tags:
+      - Topics
+    put:
+      consumes:
+      - application/json
+      description: Update an existing topic
+      parameters:
+      - description: Topic ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Topic Data
+        in: body
+        name: topic
+        required: true
+        schema:
+          $ref: '#/definitions/web.TopicUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.TopicResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Topic
+      tags:
+      - Topics
   /users:
     get:
       description: Retrieve a list of all users

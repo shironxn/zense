@@ -8,4 +8,5 @@ type Topic struct {
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Forums      []Forum `gorm:"many2many:forum_topics"`
 }

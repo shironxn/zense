@@ -24,14 +24,14 @@ type UserHandler interface {
 }
 
 type userHandler struct {
-	service   service.UserService
-	validator *validator.Validate
+	userService service.UserService
+	validator   *validator.Validate
 }
 
-func NewUserHandler(service service.UserService, validator *validator.Validate) UserHandler {
+func NewUserHandler(userService service.UserService, validator *validator.Validate) UserHandler {
 	return &userHandler{
-		service:   service,
-		validator: validator,
+		userService: userService,
+		validator:   validator,
 	}
 }
 
@@ -43,17 +43,17 @@ func NewUserHandler(service service.UserService, validator *validator.Validate) 
 // @Param			user	body		web.UserLogin	true	"User Login Request"
 // @Success		200		{object}	web.UserAuth
 // @Router			/auth/login [post]
-func (u *userHandler) Login(ctx echo.Context) error {
+func (h *userHandler) Login(ctx echo.Context) error {
 	req := new(web.UserLogin)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := u.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := u.service.Login(*req)
+	data, err := h.userService.Login(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
@@ -73,17 +73,17 @@ func (u *userHandler) Login(ctx echo.Context) error {
 // @Param			user	body		web.UserRegister	true	"User Register Request"
 // @Success		201		{object}	web.UserResponse
 // @Router			/auth/register [post]
-func (u *userHandler) Register(ctx echo.Context) error {
+func (h *userHandler) Register(ctx echo.Context) error {
 	req := new(web.UserRegister)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := u.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := u.service.Register(*req)
+	data, err := h.userService.Register(*req)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
@@ -105,18 +105,18 @@ func (u *userHandler) Register(ctx echo.Context) error {
 // @Success		200	{object}	web.UserResponse
 // @Security		BearerAuth
 // @Router			/users/me [get]
-func (u *userHandler) FindMe(ctx echo.Context) error {
+func (h *userHandler) FindMe(ctx echo.Context) error {
 	req := new(web.UserFindMe)
 
 	user := ctx.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	req.ID = uint(claims["user_id"].(float64))
 
-	if err := u.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := u.service.FindMe(*req)
+	data, err := h.userService.FindMe(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
@@ -134,8 +134,8 @@ func (u *userHandler) FindMe(ctx echo.Context) error {
 // @Produce		json
 // @Success		200	{array}	web.UserResponse
 // @Router			/users [get]
-func (u *userHandler) FindAll(ctx echo.Context) error {
-	data, err := u.service.FindAll()
+func (h *userHandler) FindAll(ctx echo.Context) error {
+	data, err := h.userService.FindAll()
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
@@ -155,17 +155,17 @@ func (u *userHandler) FindAll(ctx echo.Context) error {
 // @Param			id	path		int	true	"User ID"
 // @Success		200	{object}	web.UserResponse
 // @Router			/users/{id} [get]
-func (u *userHandler) FindByID(ctx echo.Context) error {
+func (h *userHandler) FindByID(ctx echo.Context) error {
 	req := new(web.UserFindByID)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := u.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := u.service.FindByID(*req)
+	data, err := h.userService.FindByID(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
@@ -187,7 +187,7 @@ func (u *userHandler) FindByID(ctx echo.Context) error {
 // @Success		200		{object}	web.UserResponse
 // @Security		BearerAuth
 // @Router			/users/{id} [put]
-func (u *userHandler) Update(ctx echo.Context) error {
+func (h *userHandler) Update(ctx echo.Context) error {
 	req := new(web.UserUpdate)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -197,11 +197,11 @@ func (u *userHandler) Update(ctx echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := u.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	data, err := u.service.Update(*req)
+	data, err := h.userService.Update(*req)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
@@ -222,7 +222,7 @@ func (u *userHandler) Update(ctx echo.Context) error {
 // @Success		204
 // @Security		BearerAuth
 // @Router			/users/{id} [delete]
-func (u *userHandler) Delete(ctx echo.Context) error {
+func (h *userHandler) Delete(ctx echo.Context) error {
 	req := new(web.UserDelete)
 	if err := ctx.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -232,11 +232,11 @@ func (u *userHandler) Delete(ctx echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	req.UserID = uint(claims["user_id"].(float64))
 
-	if err := u.validator.Struct(req); err != nil {
+	if err := h.validator.Struct(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := u.service.Delete(*req); err != nil {
+	if err := h.userService.Delete(*req); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
 		}

@@ -18,12 +18,12 @@ type JournalService interface {
 }
 
 type journalService struct {
-	repository repository.JournalRepository
+	journalRepository repository.JournalRepository
 }
 
-func NewJournalService(repository repository.JournalRepository) JournalService {
+func NewJournalService(journalRepository repository.JournalRepository) JournalService {
 	return &journalService{
-		repository: repository,
+		journalRepository: journalRepository,
 	}
 }
 
@@ -35,7 +35,7 @@ func (s *journalService) Create(req web.JournalCreate) (*web.JournalResponse, er
 		Visibility: req.Visibility,
 	}
 
-	journal, err := s.repository.Create(journal)
+	journal, err := s.journalRepository.Create(journal)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (s *journalService) Create(req web.JournalCreate) (*web.JournalResponse, er
 }
 
 func (s *journalService) FindAll() ([]web.JournalResponse, error) {
-	journals, err := s.repository.FindAll()
+	journals, err := s.journalRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s *journalService) FindAll() ([]web.JournalResponse, error) {
 }
 
 func (s *journalService) FindByID(req web.JournalFindByID) (*web.JournalResponse, error) {
-	journal, err := s.repository.FindByID(req.ID)
+	journal, err := s.journalRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (s *journalService) FindByID(req web.JournalFindByID) (*web.JournalResponse
 }
 
 func (s *journalService) Update(req web.JournalUpdate) (*web.JournalResponse, error) {
-	journal, err := s.repository.FindByID(req.ID)
+	journal, err := s.journalRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func (s *journalService) Update(req web.JournalUpdate) (*web.JournalResponse, er
 		Visibility: req.Visibility,
 	}
 
-	journal, err = s.repository.Update(journal)
+	journal, err = s.journalRepository.Update(journal)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func (s *journalService) Update(req web.JournalUpdate) (*web.JournalResponse, er
 }
 
 func (s *journalService) Delete(req web.JournalDelete) error {
-	journal, err := s.repository.FindByID(req.ID)
+	journal, err := s.journalRepository.FindByID(req.ID)
 	if err != nil {
 		return err
 	}
@@ -145,14 +145,10 @@ func (s *journalService) Delete(req web.JournalDelete) error {
 		return echo.NewHTTPError(http.StatusForbidden, "user does not have permission to delete this journal")
 	}
 
-	journal, err = s.repository.FindByID(req.ID)
-	if err != nil {
-		return err
-	}
-
-	if err := s.repository.Delete(journal); err != nil {
+	if err := s.journalRepository.Delete(journal); err != nil {
 		return err
 	}
 
 	return nil
 }
+

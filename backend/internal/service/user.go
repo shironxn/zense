@@ -22,19 +22,19 @@ type UserService interface {
 }
 
 type userService struct {
-	repository repository.UserRepository
-	jwt        *util.JWT
+	userRepository repository.UserRepository
+	jwt            *util.JWT
 }
 
-func NewUserService(repository repository.UserRepository, jwt *util.JWT) UserService {
+func NewUserService(userRepository repository.UserRepository, jwt *util.JWT) UserService {
 	return &userService{
-		repository: repository,
-		jwt:        jwt,
+		userRepository: userRepository,
+		jwt:            jwt,
 	}
 }
 
 func (s *userService) Login(req web.UserLogin) (*web.UserAuth, error) {
-	user, err := s.repository.FindByEmail(req.Email)
+	user, err := s.userRepository.FindByEmail(req.Email)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusUnauthorized, "user not found")
 	}
@@ -69,22 +69,22 @@ func (s *userService) Register(req web.UserRegister) (*web.UserResponse, error) 
 		Password: string(hashedPassword),
 	}
 
-	user, err = s.repository.Create(user)
+	user, err = s.userRepository.Create(user)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "failed to create user")
 	}
 
 	response := &web.UserResponse{
-		ID:   user.ID,
-		Name: user.Name,
-    CreatedAt: &user.CreatedAt,
+		ID:        user.ID,
+		Name:      user.Name,
+		CreatedAt: &user.CreatedAt,
 	}
 
 	return response, nil
 }
 
 func (s *userService) FindMe(req web.UserFindMe) (*web.UserResponse, error) {
-	user, err := s.repository.FindByID(req.ID)
+	user, err := s.userRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (s *userService) FindMe(req web.UserFindMe) (*web.UserResponse, error) {
 }
 
 func (s *userService) FindAll() ([]web.UserResponse, error) {
-	users, err := s.repository.FindAll()
+	users, err := s.userRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (s *userService) FindAll() ([]web.UserResponse, error) {
 }
 
 func (s *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) {
-	user, err := s.repository.FindByID(req.ID)
+	user, err := s.userRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func (s *userService) FindByID(req web.UserFindByID) (*web.UserResponse, error) 
 }
 
 func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
-	user, err := s.repository.FindByID(req.ID)
+	user, err := s.userRepository.FindByID(req.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 		Password: req.Password,
 	}
 
-	user, err = s.repository.Update(user)
+	user, err = s.userRepository.Update(user)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func (s *userService) Update(req web.UserUpdate) (*web.UserResponse, error) {
 }
 
 func (s *userService) Delete(req web.UserDelete) error {
-	user, err := s.repository.FindByID(req.ID)
+	user, err := s.userRepository.FindByID(req.ID)
 	if err != nil {
 		return err
 	}
@@ -184,14 +184,10 @@ func (s *userService) Delete(req web.UserDelete) error {
 		return echo.NewHTTPError(http.StatusForbidden, "you do not have permission to delete this user")
 	}
 
-	user, err = s.repository.FindByID(req.ID)
-	if err != nil {
-		return err
-	}
-
-	if err := s.repository.Delete(user); err != nil {
+	if err := s.userRepository.Delete(user); err != nil {
 		return err
 	}
 
 	return nil
 }
+
