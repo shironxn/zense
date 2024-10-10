@@ -14,13 +14,13 @@ import (
 )
 
 type UserHandler interface {
-	Login(c echo.Context) error
-	Register(c echo.Context) error
-	FindMe(c echo.Context) error
-	FindAll(c echo.Context) error
-	FindByID(c echo.Context) error
-	Update(c echo.Context) error
-	Delete(c echo.Context) error
+	Login(ctx echo.Context) error
+	Register(ctx echo.Context) error
+	FindMe(ctx echo.Context) error
+	FindAll(ctx echo.Context) error
+	FindByID(ctx echo.Context) error
+	Update(ctx echo.Context) error
+	Delete(ctx echo.Context) error
 }
 
 type userHandler struct {
@@ -244,5 +244,5 @@ func (h *userHandler) Delete(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.NoContent(http.StatusOK)
+	return ctx.NoContent(http.StatusNoContent)
 }

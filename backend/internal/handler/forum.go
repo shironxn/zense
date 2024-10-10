@@ -13,12 +13,12 @@ import (
 )
 
 type ForumHandler interface {
-	Create(c echo.Context) error
-	FindAll(c echo.Context) error
-	FindByID(c echo.Context) error
-	Update(c echo.Context) error
-	Delete(c echo.Context) error
-	RemoveTopic(c echo.Context) error
+	Create(ctx echo.Context) error
+	FindAll(ctx echo.Context) error
+	FindByID(ctx echo.Context) error
+	Update(ctx echo.Context) error
+	Delete(ctx echo.Context) error
+	RemoveTopic(ctx echo.Context) error
 }
 
 type forumHandler struct {
@@ -179,7 +179,7 @@ func (h *forumHandler) Delete(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.NoContent(http.StatusOK)
+	return ctx.NoContent(http.StatusNoContent)
 }
 
 // @Summary		Remove Topic from Forum
@@ -213,5 +213,5 @@ func (h *forumHandler) RemoveTopic(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.NoContent(http.StatusOK)
+	return ctx.NoContent(http.StatusNoContent)
 }

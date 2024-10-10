@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/aternity/zense/internal/entity/domain"
@@ -10,31 +11,44 @@ import (
 	"github.com/aternity/zense/internal/service"
 	"github.com/aternity/zense/internal/util"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/generative-ai-go/genai"
 	"github.com/labstack/echo/v4"
+	"google.golang.org/api/option"
 	"gorm.io/gorm"
 )
 
 type Server struct {
-	Host string
-	Port string
-	DB   *gorm.DB
-	JWT  util.JWT
+	Host  string
+	Port  string
+	Genai string
+	DB    *gorm.DB
+	JWT   util.JWT
 }
 
 func NewServer(server Server) *Server {
 	return &Server{
-		Host: server.Host,
-		Port: server.Port,
-		DB:   server.DB,
-		JWT:  server.JWT,
+		Host:  server.Host,
+		Port:  server.Port,
+		Genai: server.Genai,
+		DB:    server.DB,
+		JWT:   server.JWT,
 	}
 }
 
 func (s *Server) Run() error {
 	e := echo.New()
 
+	ctx := context.Background()
+	client, err := genai.NewClient(ctx, option.WithAPIKey(s.Genai))
+	if err != nil {
+		return err
+	}
+
 	jwt := util.NewJWT(s.JWT.Secret)
 	validator := validator.New(validator.WithRequiredStructEnabled())
+
+	ventService := service.NewVentService(client)
+	ventHandler := handler.NewVentHandler(ventService, validator)
 
 	userRepository := repository.NewUserRepository(s.DB)
 	userService := service.NewUserService(userRepository, jwt)
@@ -62,6 +76,7 @@ func (s *Server) Run() error {
 		Topic:   topicHandler,
 		Comment: commentHandler,
 		Forum:   forumHandler,
+		Vent:    ventHandler,
 	})
 
 	s.DB.AutoMigrate(&domain.User{}, &domain.Journal{}, &domain.Forum{}, &domain.Topic{}, &domain.Comment{})

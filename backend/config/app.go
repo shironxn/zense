@@ -19,10 +19,11 @@ func New() (*App, error) {
 
 	return &App{
 		Server: Server{
-			Host: os.Getenv("APP_HOST"),
-			Port: os.Getenv("APP_PORT"),
+			Host:  os.Getenv("APP_HOST"),
+			Port:  os.Getenv("APP_PORT"),
+			Genai: os.Getenv("GEMINI_API_KEY"),
 			JWT: util.JWT{
-				Secret:  os.Getenv("JWT_SECRET"),
+				Secret: os.Getenv("JWT_SECRET"),
 			},
 		},
 		Database: Database{

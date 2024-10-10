@@ -23,6 +23,7 @@ type Handlers struct {
 	Topic   handler.TopicHandler
 	Comment handler.CommentHandler
 	Forum   handler.ForumHandler
+	Vent    handler.VentHandler
 }
 
 func NewRouter(
@@ -72,6 +73,7 @@ func (r *Router) setupRoutes(api *echo.Group) {
 	forums := api.Group("/forums")
 	comments := api.Group("/comments")
 	topics := api.Group("/topics")
+	vents := api.Group("/vents")
 
 	api.GET("/docs", func(c echo.Context) error {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
@@ -120,4 +122,7 @@ func (r *Router) setupRoutes(api *echo.Group) {
 	forums.PUT("/:id", r.handlers.Forum.Update)
 	forums.DELETE("/:id", r.handlers.Forum.Delete)
 	forums.DELETE("/:id/topic", r.handlers.Forum.RemoveTopic)
+
+	vents.POST("", r.handlers.Vent.Chat)
+	vents.DELETE("", r.handlers.Vent.Clear)
 }

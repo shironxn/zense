@@ -299,6 +299,18 @@ definitions:
       user_id:
         type: integer
     type: object
+  web.VentRequest:
+    properties:
+      message:
+        type: string
+    required:
+    - message
+    type: object
+  web.VentResponse:
+    properties:
+      message:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -900,6 +912,40 @@ paths:
       summary: Get current user
       tags:
       - Users
+  /vents:
+    delete:
+      description: Clear the chat history for the current user
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Clear chat history
+      tags:
+      - Vents
+    post:
+      consumes:
+      - application/json
+      description: Start a chat session with AI for venting (confiding)
+      parameters:
+      - description: Vent Request
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/web.VentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.VentResponse'
+      security:
+      - BearerAuth: []
+      summary: Chat with AI
+      tags:
+      - Vents
 securityDefinitions:
   BearerAuth:
     description: 'Provide your JWT token here. Example: "Bearer {token}"'

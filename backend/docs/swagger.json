@@ -942,6 +942,62 @@
                     }
                 }
             }
+        },
+        "/vents": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Start a chat session with AI for venting (confiding)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vents"
+                ],
+                "summary": "Chat with AI",
+                "parameters": [
+                    {
+                        "description": "Vent Request",
+                        "name": "chat",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.VentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.VentResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Clear the chat history for the current user",
+                "tags": [
+                    "Vents"
+                ],
+                "summary": "Clear chat history",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1390,6 +1446,25 @@
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "web.VentRequest": {
+            "type": "object",
+            "required": [
+                "message"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "web.VentResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         }

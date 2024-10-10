@@ -28,10 +28,11 @@ func main() {
 	}
 
 	if err := config.NewServer(config.Server{
-		Host: cfg.Server.Host,
-		Port: cfg.Server.Port,
-		DB:   db,
-		JWT:  cfg.Server.JWT,
+		Host:  cfg.Server.Host,
+		Port:  cfg.Server.Port,
+		Genai: cfg.Server.Genai,
+		DB:    db,
+		JWT:   cfg.Server.JWT,
 	}).Run(); err != nil {
 		logrus.Panic(err.Error())
 	}
