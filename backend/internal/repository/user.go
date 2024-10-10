@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/aternity/zense/internal/entity/domain"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserRepository interface {
@@ -68,5 +69,5 @@ func (r *userRepository) Update(user *domain.User) (*domain.User, error) {
 }
 
 func (r *userRepository) Delete(user *domain.User) error {
-	return r.db.Delete(user).Error
+	return r.db.Select(clause.Associations).Delete(&user).Error
 }
