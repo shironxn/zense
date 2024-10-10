@@ -424,6 +424,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/forums/{id}/topic": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove a topic from a specific forum by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forums"
+                ],
+                "summary": "Remove Topic from Forum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Forum ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Remove Topic from Forum",
+                        "name": "topic",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ForumRemoveTopic"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/journals": {
             "get": {
                 "description": "Get all journals",
@@ -1047,6 +1087,23 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "web.ForumRemoveTopic": {
+            "type": "object",
+            "required": [
+                "topic_id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "topic_id": {
+                    "type": "integer"
                 },
                 "user_id": {
                     "type": "integer"

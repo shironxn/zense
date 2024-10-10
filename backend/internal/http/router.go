@@ -119,4 +119,5 @@ func (r *Router) setupRoutes(api *echo.Group) {
 	forums.GET("/:id", r.handlers.Forum.FindByID)
 	forums.PUT("/:id", r.handlers.Forum.Update)
 	forums.DELETE("/:id", r.handlers.Forum.Delete)
+	forums.DELETE("/:id/topic", r.handlers.Forum.RemoveTopic)
 }

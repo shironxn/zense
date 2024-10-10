@@ -59,13 +59,5 @@ func (r *topicRepository) Update(topic *domain.Topic) (*domain.Topic, error) {
 }
 
 func (r *topicRepository) Delete(topic *domain.Topic) error {
-	if err := r.db.Model(&topic).Association("Forums").Clear(); err != nil {
-		return err
-	}
-
-	if err := r.db.Delete(&topic).Error; err != nil {
-		return err
-	}
-
-	return nil
+	return r.db.Select("Forums").Delete(&topic).Error
 }

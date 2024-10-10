@@ -38,3 +38,9 @@ type ForumDelete struct {
 	ID     uint `param:"id"`
 	UserID uint `json:"user_id"`
 }
+
+type ForumRemoveTopic struct {
+	ID      uint `param:"id"`
+	UserID  uint `json:"user_id"`
+	TopicID uint `json:"topic_id" validate:"required"`
+}

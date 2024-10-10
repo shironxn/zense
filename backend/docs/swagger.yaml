@@ -98,6 +98,17 @@ definitions:
     - title
     - topics
     type: object
+  web.ForumRemoveTopic:
+    properties:
+      id:
+        type: integer
+      topic_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - topic_id
+    type: object
   web.ForumResponse:
     properties:
       content:
@@ -553,6 +564,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Update Forum
+      tags:
+      - Forums
+  /forums/{id}/topic:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a topic from a specific forum by its ID
+      parameters:
+      - description: Forum ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Remove Topic from Forum
+        in: body
+        name: topic
+        required: true
+        schema:
+          $ref: '#/definitions/web.ForumRemoveTopic'
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Remove Topic from Forum
       tags:
       - Forums
   /journals:

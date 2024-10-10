@@ -11,6 +11,7 @@ type ForumRepository interface {
 	FindByID(id uint) (*domain.Forum, error)
 	Update(forum *domain.Forum) (*domain.Forum, error)
 	Delete(forum *domain.Forum) error
+	RemoveTopic(forum *domain.Forum) error
 }
 
 type forumRepository struct {
@@ -45,7 +46,7 @@ func (r *forumRepository) FindAll() ([]domain.Forum, error) {
 
 func (r *forumRepository) FindByID(id uint) (*domain.Forum, error) {
 	var forum domain.Forum
-	if err := r.db.Preload("User").First(&forum, id).Error; err != nil {
+	if err := r.db.Preload("User").Preload("Topics").First(&forum, id).Error; err != nil {
 		return nil, err
 	}
 	return &forum, nil
@@ -59,13 +60,9 @@ func (r *forumRepository) Update(forum *domain.Forum) (*domain.Forum, error) {
 }
 
 func (r *forumRepository) Delete(forum *domain.Forum) error {
-	if err := r.db.Model(&forum).Association("Topics").Clear(); err != nil {
-		return err
-	}
+	return r.db.Select("Topics").Delete(&forum).Error
+}
 
-	if err := r.db.Delete(&forum).Error; err != nil {
-		return err
-	}
-
-	return nil
+func (r *forumRepository) RemoveTopic(forum *domain.Forum) error {
+	return r.db.Unscoped().Model(&forum).Association("Topics").Unscoped().Clear()
 }

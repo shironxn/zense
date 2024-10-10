@@ -17,6 +17,7 @@ type ForumService interface {
 	FindByID(req web.ForumFindByID) (*web.ForumResponse, error)
 	Update(req web.ForumUpdate) (*web.ForumResponse, error)
 	Delete(req web.ForumDelete) error
+	RemoveTopic(req web.ForumRemoveTopic) error
 }
 
 type forumService struct {
@@ -203,6 +204,23 @@ func (s *forumService) Delete(req web.ForumDelete) error {
 	}
 
 	if err := s.forumRepository.Delete(forum); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *forumService) RemoveTopic(req web.ForumRemoveTopic) error {
+	forum, err := s.forumRepository.FindByID(req.ID)
+	if err != nil {
+		return err
+	}
+
+	if forum.UserID != req.UserID {
+		return echo.NewHTTPError(http.StatusForbidden, "user does not have permission to update this forum")
+	}
+
+	if err := s.forumRepository.RemoveTopic(forum); err != nil {
 		return err
 	}
 
