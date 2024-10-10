@@ -19,4 +19,5 @@ type Forum struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Comments  []Comment
+  User User
 }

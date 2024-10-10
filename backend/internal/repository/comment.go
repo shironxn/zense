@@ -32,7 +32,7 @@ func (r *commentRepository) Create(comment *domain.Comment) (*domain.Comment, er
 
 func (r *commentRepository) FindAll() ([]domain.Comment, error) {
 	var comments []domain.Comment
-	if err := r.db.Find(&comments).Error; err != nil {
+	if err := r.db.Preload("User").Find(&comments).Error; err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (r *commentRepository) FindAll() ([]domain.Comment, error) {
 
 func (r *commentRepository) FindByID(id uint) (*domain.Comment, error) {
 	var comment domain.Comment
-	if err := r.db.First(&comment, id).Error; err != nil {
+	if err := r.db.Preload("User").First(&comment, id).Error; err != nil {
 		return nil, err
 	}
 	return &comment, nil

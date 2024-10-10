@@ -8,12 +8,13 @@ import (
 
 type JournalResponse struct {
 	ID         uint                     `json:"id"`
-	UserID     uint                     `json:"user_id"`
+	UserID     uint                     `json:"user_id,omitempty"`
 	Mood       domain.JournalMood       `json:"mood,omitempty"`
 	Content    string                   `json:"content,omitempty"`
 	Visibility domain.JournalVisibility `json:"visibility,omitempty"`
 	CreatedAt  *time.Time               `json:"created_at,omitempty"`
 	UpdatedAt  *time.Time               `json:"updated_at,omitempty"`
+	User       *UserResponse            `json:"user"`
 }
 
 type JournalCreate struct {

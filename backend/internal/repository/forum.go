@@ -32,7 +32,7 @@ func (r *forumRepository) Create(forum *domain.Forum) (*domain.Forum, error) {
 
 func (r *forumRepository) FindAll() ([]domain.Forum, error) {
 	var forums []domain.Forum
-	if err := r.db.Find(&forums).Error; err != nil {
+	if err := r.db.Preload("User").Find(&forums).Error; err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (r *forumRepository) FindAll() ([]domain.Forum, error) {
 
 func (r *forumRepository) FindByID(id uint) (*domain.Forum, error) {
 	var forum domain.Forum
-	if err := r.db.First(&forum, id).Error; err != nil {
+	if err := r.db.Preload("User").First(&forum, id).Error; err != nil {
 		return nil, err
 	}
 	return &forum, nil

@@ -26,4 +26,5 @@ type Journal struct {
 	Visibility JournalVisibility `gorm:"default:'private'" sql:"type:visibility"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+  User User
 }

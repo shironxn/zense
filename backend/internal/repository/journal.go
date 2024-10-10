@@ -32,7 +32,7 @@ func (r *journalRepository) Create(journal *domain.Journal) (*domain.Journal, er
 
 func (r *journalRepository) FindAll() ([]domain.Journal, error) {
 	var journals []domain.Journal
-	if err := r.db.Find(&journals).Error; err != nil {
+	if err := r.db.Preload("User").Find(&journals).Error; err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (r *journalRepository) FindAll() ([]domain.Journal, error) {
 
 func (r *journalRepository) FindByID(id uint) (*domain.Journal, error) {
 	var journal domain.Journal
-	if err := r.db.First(&journal, id).Error; err != nil {
+	if err := r.db.Preload("User").First(&journal, id).Error; err != nil {
 		return nil, err
 	}
 	return &journal, nil

@@ -62,12 +62,15 @@ func (s *journalService) FindAll() ([]web.JournalResponse, error) {
 	for _, journal := range journals {
 		response := web.JournalResponse{
 			ID:         journal.ID,
-			UserID:     journal.UserID,
 			Mood:       journal.Mood,
 			Content:    journal.Content,
 			Visibility: journal.Visibility,
 			CreatedAt:  &journal.CreatedAt,
 			UpdatedAt:  &journal.UpdatedAt,
+			User: &web.UserResponse{
+				ID:   journal.User.ID,
+				Name: journal.User.Name,
+			},
 		}
 		responses = append(responses, response)
 	}
@@ -83,12 +86,15 @@ func (s *journalService) FindByID(req web.JournalFindByID) (*web.JournalResponse
 
 	response := &web.JournalResponse{
 		ID:         journal.ID,
-		UserID:     journal.UserID,
 		Mood:       journal.Mood,
 		Content:    journal.Content,
 		Visibility: journal.Visibility,
 		CreatedAt:  &journal.CreatedAt,
 		UpdatedAt:  &journal.UpdatedAt,
+		User: &web.UserResponse{
+			ID:   journal.User.ID,
+			Name: journal.User.Name,
+		},
 	}
 
 	return response, nil

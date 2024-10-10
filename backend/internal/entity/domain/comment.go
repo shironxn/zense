@@ -18,4 +18,5 @@ type Comment struct {
 	Visibility CommentVisibility `gorm:"default:'review'" sql:"type:visibility"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+  User User
 }

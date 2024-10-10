@@ -62,12 +62,15 @@ func (f *forumService) FindAll() ([]web.ForumResponse, error) {
 	for _, forum := range forums {
 		responses = append(responses, web.ForumResponse{
 			ID:        forum.ID,
-			UserID:    forum.UserID,
 			Title:     forum.Title,
 			Topic:     forum.Topic,
 			Content:   forum.Content,
 			CreatedAt: &forum.CreatedAt,
 			UpdatedAt: &forum.UpdatedAt,
+			User: &web.UserResponse{
+				ID:   forum.User.ID,
+				Name: forum.User.Name,
+			},
 		})
 	}
 
@@ -82,12 +85,15 @@ func (f *forumService) FindByID(req web.ForumFindByID) (*web.ForumResponse, erro
 
 	response := &web.ForumResponse{
 		ID:        forum.ID,
-		UserID:    forum.UserID,
 		Title:     forum.Title,
 		Topic:     forum.Topic,
 		Content:   forum.Content,
 		CreatedAt: &forum.CreatedAt,
 		UpdatedAt: &forum.UpdatedAt,
+		User: &web.UserResponse{
+			ID:   forum.User.ID,
+			Name: forum.User.Name,
+		},
 	}
 
 	return response, nil

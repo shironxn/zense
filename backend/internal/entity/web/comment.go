@@ -8,12 +8,13 @@ import (
 
 type CommentResponse struct {
 	ID         uint                     `json:"id"`
-	UserID     uint                     `json:"user_id"`
 	ForumID    uint                     `json:"forum_id"`
+	UserID     uint                     `json:"user_id,omitempty"`
 	Content    string                   `json:"content,omitempty"`
 	Visibility domain.CommentVisibility `json:"comment,omitempty"`
 	CreatedAt  *time.Time               `json:"created_at,omitempty"`
 	UpdatedAt  *time.Time               `json:"updated_at,omitempty"`
+	User       *UserResponse            `json:"user,omitempty"`
 }
 
 type CommentFindByID struct {

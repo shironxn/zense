@@ -62,12 +62,15 @@ func (s *commentService) FindAll() ([]web.CommentResponse, error) {
 	for _, comment := range comments {
 		responses = append(responses, web.CommentResponse{
 			ID:         comment.ID,
-			UserID:     comment.UserID,
 			ForumID:    comment.ForumID,
 			Content:    comment.Content,
 			Visibility: comment.Visibility,
 			CreatedAt:  &comment.CreatedAt,
 			UpdatedAt:  &comment.UpdatedAt,
+			User: &web.UserResponse{
+				ID:   comment.User.ID,
+				Name: comment.User.Name,
+			},
 		})
 	}
 
@@ -82,12 +85,15 @@ func (s *commentService) FindByID(req web.CommentFindByID) (*web.CommentResponse
 
 	response := &web.CommentResponse{
 		ID:         comment.ID,
-		UserID:     comment.UserID,
 		ForumID:    comment.ForumID,
 		Content:    comment.Content,
 		Visibility: comment.Visibility,
 		CreatedAt:  &comment.CreatedAt,
 		UpdatedAt:  &comment.UpdatedAt,
+		User: &web.UserResponse{
+			ID:   comment.User.ID,
+			Name: comment.User.Name,
+		},
 	}
 
 	return response, nil
