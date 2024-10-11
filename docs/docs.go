@@ -1488,7 +1488,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "friendly-dix-shironxn-0efcbcb7.koyeb.app",
+	Host:             "https://friendly-dix-shironxn-0efcbcb7.koyeb.app",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Zense",
