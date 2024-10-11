@@ -49,6 +49,13 @@ func (r *Router) Run() http.Handler {
 	return r.e
 }
 
+func (r *Router) setupCORS() {
+	r.e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:8080", "https://friendly-dix-shironxn-0efcbcb7.koyeb.app"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
+}
+
 func (r *Router) setupJWT() {
 	r.e.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(r.jwt.Secret),
