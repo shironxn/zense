@@ -1490,7 +1490,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "friendly-dix-shironxn-0efcbcb7.koyeb.app",
 	BasePath:         "/api/v1",
-	Schemes:          []string{},
+	Schemes:          []string{"https"},
 	Title:            "Zense",
 	Description:      "Zense API Docs",
 	InfoInstanceName: "swagger",

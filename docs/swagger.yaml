@@ -946,6 +946,8 @@ paths:
       summary: Chat with AI
       tags:
       - Vents
+schemes:
+- https
 securityDefinitions:
   BearerAuth:
     description: 'Provide your JWT token here. Example: "Bearer {token}"'

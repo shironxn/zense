@@ -10,6 +10,7 @@ import (
 //	@description	Zense API Docs
 //	@host			friendly-dix-shironxn-0efcbcb7.koyeb.app
 //	@BasePath		/api/v1
+//	@schemes		https
 
 //	@securityDefinitions.apikey	BearerAuth
 //	@in							header
