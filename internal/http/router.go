@@ -41,6 +41,7 @@ func NewRouter(
 func (r *Router) Run() http.Handler {
 	r.e.Use(middleware.Logger())
 	r.e.Use(middleware.Recover())
+	r.setupCORS()
 	r.setupJWT()
 
 	api := r.e.Group("/api/v1")
