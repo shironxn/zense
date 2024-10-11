@@ -51,11 +51,7 @@ func (r *Router) Run() http.Handler {
 }
 
 func (r *Router) setupCORS() {
-	r.e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://friendly-dix-shironxn-0efcbcb7.koyeb.app"},
-		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
-	}))
-
+	r.e.Use(middleware.CORS())
 }
 
 func (r *Router) setupJWT() {
