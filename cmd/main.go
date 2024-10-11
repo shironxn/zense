@@ -8,7 +8,7 @@ import (
 //	@title			Zense
 //	@version		1.0
 //	@description	Zense API Docs
-//	@host			https://friendly-dix-shironxn-0efcbcb7.koyeb.app
+//	@host			http://friendly-dix-shironxn-0efcbcb7.koyeb.app
 //	@BasePath		/api/v1
 
 //	@securityDefinitions.apikey	BearerAuth

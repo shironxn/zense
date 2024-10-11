@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "https://friendly-dix-shironxn-0efcbcb7.koyeb.app",
+    "host": "http://friendly-dix-shironxn-0efcbcb7.koyeb.app",
     "basePath": "/api/v1",
     "paths": {
         "/auth/login": {
