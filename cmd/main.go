@@ -19,8 +19,8 @@ import (
 func main() {
 	cfg, err := config.New()
 	if err != nil {
-	logrus.Error(err.Error())
-  }
+		// logrus.Panic(err.Error())
+	}
 
 	db, err := config.NewDatabase(cfg.Database).Connection()
 	if err != nil {
