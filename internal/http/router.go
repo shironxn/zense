@@ -44,6 +44,9 @@ func (r *Router) Run() http.Handler {
 	r.setupCORS()
 	r.setupJWT()
 
+	r.e.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "Welcome To Zense")
+	})
 	api := r.e.Group("/api/v1")
 	r.setupRoutes(api)
 
