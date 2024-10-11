@@ -311,7 +311,7 @@ definitions:
       message:
         type: string
     type: object
-host: http://friendly-dix-shironxn-0efcbcb7.koyeb.app
+host: friendly-dix-shironxn-0efcbcb7.koyeb.app
 info:
   contact: {}
   description: Zense API Docs
