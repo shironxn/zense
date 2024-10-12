@@ -153,12 +153,18 @@ func (s *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 	}
 
 	var topics []domain.Topic
-	for _, topicID := range req.Topics {
-		topic, err := s.topicRepository.FindByID(topicID)
-		if err != nil {
-			return nil, err
+	if len(req.Topics) != 0 {
+		for _, topicID := range req.Topics {
+			topic, err := s.topicRepository.FindByID(topicID)
+			if err != nil {
+				if errors.Is(err, gorm.ErrRecordNotFound) {
+					return nil, echo.NewHTTPError(http.StatusNotFound, "topics not found")
+				}
+
+				return nil, err
+			}
+			topics = append(topics, *topic)
 		}
-		topics = append(topics, *topic)
 	}
 
 	forum = &domain.Forum{
