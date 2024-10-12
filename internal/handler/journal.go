@@ -118,7 +118,7 @@ func (h *journalHandler) FindByID(ctx echo.Context) error {
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int					true	"Journal ID"
-// @Param			journal	body		web.JournalUpdate	true	"Updated Journal Data"
+// @Param			journal	body		web.JournalUpdate	false	"Updated Journal Data"
 // @Success		200		{object}	web.JournalResponse
 // @Security		BearerAuth
 // @Router			/journals/{id} [put]

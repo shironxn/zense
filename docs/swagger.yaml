@@ -214,11 +214,7 @@ definitions:
       user_id:
         type: integer
       visibility:
-        allOf:
-        - $ref: '#/definitions/domain.JournalVisibility'
-        enum:
-        - private
-        - public
+        $ref: '#/definitions/domain.JournalVisibility'
     type: object
   web.TopicCreate:
     properties:
@@ -477,7 +473,6 @@ paths:
       - description: Updated Comment Data
         in: body
         name: comment
-        required: true
         schema:
           $ref: '#/definitions/web.CommentUpdate'
       produces:
@@ -582,7 +577,6 @@ paths:
       - description: Updated Forum Data
         in: body
         name: forum
-        required: true
         schema:
           $ref: '#/definitions/web.ForumUpdate'
       produces:
@@ -712,7 +706,6 @@ paths:
       - description: Updated Journal Data
         in: body
         name: journal
-        required: true
         schema:
           $ref: '#/definitions/web.JournalUpdate'
       produces:

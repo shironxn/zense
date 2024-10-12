@@ -120,7 +120,7 @@ func (h *commentHandler) FindByID(ctx echo.Context) error {
 // @Accept			json
 // @Produce		json
 // @Param			id		path		int					true	"Comment ID"
-// @Param			comment	body		web.CommentUpdate	true	"Updated Comment Data"
+// @Param			comment	body		web.CommentUpdate	false	"Updated Comment Data"
 // @Success		200		{object}	web.CommentResponse
 // @Security		BearerAuth
 // @Router			/comments/{id} [put]

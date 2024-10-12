@@ -119,7 +119,7 @@ func (h *forumHandler) FindByID(ctx echo.Context) error {
 // @Accept			json
 // @Produce		json
 // @Param			id		path		string			true	"Forum ID"
-// @Param			forum	body		web.ForumUpdate	true	"Updated Forum Data"
+// @Param			forum	body		web.ForumUpdate	false	"Updated Forum Data"
 // @Success		200		{object}	web.ForumResponse
 // @Security		BearerAuth
 // @Router			/forums/{id} [put]

@@ -211,7 +211,6 @@ const docTemplate = `{
                         "description": "Updated Comment Data",
                         "name": "comment",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/web.CommentUpdate"
                         }
@@ -379,7 +378,6 @@ const docTemplate = `{
                         "description": "Updated Forum Data",
                         "name": "forum",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/web.ForumUpdate"
                         }
@@ -584,7 +582,6 @@ const docTemplate = `{
                         "description": "Updated Journal Data",
                         "name": "journal",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/web.JournalUpdate"
                         }
@@ -1328,15 +1325,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "visibility": {
-                    "enum": [
-                        "private",
-                        "public"
-                    ],
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/domain.JournalVisibility"
-                        }
-                    ]
+                    "$ref": "#/definitions/domain.JournalVisibility"
                 }
             }
         },
