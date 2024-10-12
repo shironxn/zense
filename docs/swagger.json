@@ -1,6 +1,6 @@
 {
     "schemes": [
-        "http"
+        "https"
     ],
     "swagger": "2.0",
     "info": {
@@ -9,7 +9,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "friendly-dix-shironxn-0efcbcb7.koyeb.app",
     "basePath": "/api/v1",
     "paths": {
         "/auth/login": {
@@ -1049,7 +1049,8 @@
             "type": "object",
             "required": [
                 "content",
-                "forum_id"
+                "forum_id",
+                "visibility"
             ],
             "properties": {
                 "content": {
@@ -1062,7 +1063,16 @@
                     "type": "integer"
                 },
                 "visibility": {
-                    "$ref": "#/definitions/domain.CommentVisibility"
+                    "enum": [
+                        "review",
+                        "public",
+                        "private"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.CommentVisibility"
+                        }
+                    ]
                 }
             }
         },
@@ -1221,20 +1231,41 @@
         "web.JournalCreate": {
             "type": "object",
             "required": [
-                "content"
+                "content",
+                "mood",
+                "visibility"
             ],
             "properties": {
                 "content": {
                     "type": "string"
                 },
                 "mood": {
-                    "$ref": "#/definitions/domain.JournalMood"
+                    "enum": [
+                        "happy",
+                        "good",
+                        "normal",
+                        "sad",
+                        "angry"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.JournalMood"
+                        }
+                    ]
                 },
                 "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
-                    "$ref": "#/definitions/domain.JournalVisibility"
+                    "enum": [
+                        "private",
+                        "public"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.JournalVisibility"
+                        }
+                    ]
                 }
             }
         },

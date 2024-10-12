@@ -1052,7 +1052,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "content",
-                "forum_id"
+                "forum_id",
+                "visibility"
             ],
             "properties": {
                 "content": {
@@ -1065,7 +1066,16 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "visibility": {
-                    "$ref": "#/definitions/domain.CommentVisibility"
+                    "enum": [
+                        "review",
+                        "public",
+                        "private"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.CommentVisibility"
+                        }
+                    ]
                 }
             }
         },
@@ -1224,20 +1234,41 @@ const docTemplate = `{
         "web.JournalCreate": {
             "type": "object",
             "required": [
-                "content"
+                "content",
+                "mood",
+                "visibility"
             ],
             "properties": {
                 "content": {
                     "type": "string"
                 },
                 "mood": {
-                    "$ref": "#/definitions/domain.JournalMood"
+                    "enum": [
+                        "happy",
+                        "good",
+                        "normal",
+                        "sad",
+                        "angry"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.JournalMood"
+                        }
+                    ]
                 },
                 "user_id": {
                     "type": "integer"
                 },
                 "visibility": {
-                    "$ref": "#/definitions/domain.JournalVisibility"
+                    "enum": [
+                        "private",
+                        "public"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.JournalVisibility"
+                        }
+                    ]
                 }
             }
         },
@@ -1488,9 +1519,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "friendly-dix-shironxn-0efcbcb7.koyeb.app",
 	BasePath:         "/api/v1",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"https"},
 	Title:            "Zense",
 	Description:      "Zense API Docs",
 	InfoInstanceName: "swagger",

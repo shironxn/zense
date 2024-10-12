@@ -41,10 +41,16 @@ definitions:
       user_id:
         type: integer
       visibility:
-        $ref: '#/definitions/domain.CommentVisibility'
+        allOf:
+        - $ref: '#/definitions/domain.CommentVisibility'
+        enum:
+        - review
+        - public
+        - private
     required:
     - content
     - forum_id
+    - visibility
     type: object
   web.CommentResponse:
     properties:
@@ -150,13 +156,26 @@ definitions:
       content:
         type: string
       mood:
-        $ref: '#/definitions/domain.JournalMood'
+        allOf:
+        - $ref: '#/definitions/domain.JournalMood'
+        enum:
+        - happy
+        - good
+        - normal
+        - sad
+        - angry
       user_id:
         type: integer
       visibility:
-        $ref: '#/definitions/domain.JournalVisibility'
+        allOf:
+        - $ref: '#/definitions/domain.JournalVisibility'
+        enum:
+        - private
+        - public
     required:
     - content
+    - mood
+    - visibility
     type: object
   web.JournalResponse:
     properties:
@@ -311,7 +330,7 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8080
+host: friendly-dix-shironxn-0efcbcb7.koyeb.app
 info:
   contact: {}
   description: Zense API Docs
@@ -947,7 +966,7 @@ paths:
       tags:
       - Vents
 schemes:
-- http
+- https
 securityDefinitions:
   BearerAuth:
     description: 'Provide your JWT token here. Example: "Bearer {token}"'
