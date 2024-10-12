@@ -311,7 +311,7 @@ definitions:
       message:
         type: string
     type: object
-host: friendly-dix-shironxn-0efcbcb7.koyeb.app
+host: localhost:8080
 info:
   contact: {}
   description: Zense API Docs
@@ -947,7 +947,7 @@ paths:
       tags:
       - Vents
 schemes:
-- https
+- http
 securityDefinitions:
   BearerAuth:
     description: 'Provide your JWT token here. Example: "Bearer {token}"'

@@ -1,6 +1,6 @@
 {
     "schemes": [
-        "https"
+        "http"
     ],
     "swagger": "2.0",
     "info": {
@@ -9,7 +9,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "friendly-dix-shironxn-0efcbcb7.koyeb.app",
+    "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
         "/auth/login": {

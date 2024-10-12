@@ -151,4 +151,3 @@ func (s *journalService) Delete(req web.JournalDelete) error {
 
 	return nil
 }
-

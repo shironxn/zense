@@ -25,7 +25,7 @@ type CommentCreate struct {
 	UserID     uint                     `json:"user_id"`
 	ForumID    uint                     `json:"forum_id" validate:"required"`
 	Content    string                   `validate:"required"`
-	Visibility domain.CommentVisibility `validate:"required;oneof=review public private"`
+	Visibility domain.CommentVisibility `validate:"required,oneof=review public private"`
 }
 
 type CommentUpdate struct {

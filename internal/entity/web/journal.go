@@ -19,9 +19,9 @@ type JournalResponse struct {
 
 type JournalCreate struct {
 	UserID     uint                     `json:"user_id"`
-	Mood       domain.JournalMood       `validate:"required;oneof=happy good normal sad angry"`
+	Mood       domain.JournalMood       `validate:"required,oneof=happy good normal sad angry"`
 	Content    string                   `validate:"required"`
-	Visibility domain.JournalVisibility `validate:"required;oneof=private public"`
+	Visibility domain.JournalVisibility `validate:"required,oneof=private public"`
 }
 
 type JournalFindByID struct {
