@@ -153,7 +153,7 @@ func (s *forumService) Update(req web.ForumUpdate) (*web.ForumResponse, error) {
 	}
 
 	var topics []domain.Topic
-	if len(req.Topics) != 0 {
+	if len(req.Topics) > 0 {
 		for _, topicID := range req.Topics {
 			topic, err := s.topicRepository.FindByID(topicID)
 			if err != nil {
