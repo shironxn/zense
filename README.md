@@ -26,7 +26,7 @@
 - **Forum**: Users can post questions, experiences, or support others in the community through the forum system.
 - **Journal**: Zense includes a journaling feature to help users record their thoughts and feelings, allowing them to monitor their mental health more reflectively over time. 
 ## Tech Stack
-[![TECHSTACK](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht/preview?elements=7RFJJTI6R9IuWQ6EL_7SZg&type=embed)](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht?elements=7RFJJTI6R9IuWQ6EL_7SZg)
+![TECHSTACK](./assets/techstack.png)
 
 Zense is built with the following technologies:
 
@@ -44,7 +44,7 @@ Zense is built with the following technologies:
 - **Docker**: Containerization of the application to ensure consistent deployment across different environments.
 - **Koyeb**: Cloud hosting platform used for deploying the API and handling server infrastructure.
 ## Database Structure (ERD)
-[![ERD](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht/preview?elements=zbxW9tDxax19295KsQkZRw&type=embed)](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht?elements=zbxW9tDxax19295KsQkZRw)
+![ERD](./assets/erd.png)
 
 Zense's database structure is built with scalability and efficiency in mind, using PostgreSQL as the primary database. Below is the Entity-Relationship Diagram (ERD) outlining the main entities and relationships in the system:
 
