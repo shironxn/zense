@@ -2,13 +2,13 @@
 **Zense** is a mental health support platform designed to provide a safe and private environment for users to express their thoughts and feelings. Users can confide in an AI chatbot, participate in forums, and engage with a supportive community. The platform emphasizes privacy, empathy, and accessibility for anyone seeking mental health support.
 
 ## Table Of Contents
-1. [﻿Project Goals](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#jaK5QIksWxAuQ6vkCD0zz) ﻿
-2. [﻿How It Works](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#-AyfyLrSVXZ4Uw0EiIPsl)﻿
-3. [﻿Tech Stack](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#LMZQVCCFoHciF8U3631iq) 
-4. [﻿Database Structure (ERD)](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#mx_DMObPBT974RO-Rpa9R)﻿﻿
-5. [﻿Getting Started](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#IuP4iuAxSPHRp9EY6Ny82)﻿
-6. [﻿Api Documentation](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#zVm1Q26jPwv3alsAhL8cz) 
-7. [﻿License](https://app.eraser.io/workspace/usppzRKZYjnoaw6Jl9Ht#Hh37UyxLZYT5uR1J6rs5L)﻿
+1. [﻿Project Goals](https://github.com/shironxn/zense?tab=readme-ov-file#project-goals) ﻿
+2. [﻿How It Works](https://github.com/shironxn/zense?tab=readme-ov-file#how-it-works)﻿
+3. [﻿Tech Stack](https://github.com/shironxn/zense?tab=readme-ov-file#tech-stack) 
+4. [﻿Database Structure (ERD)](https://github.com/shironxn/zense?tab=readme-ov-file#database-structure-erd)﻿﻿
+5. [﻿Getting Started](https://github.com/shironxn/zense?tab=readme-ov-file#getting-started)﻿
+6. [﻿Api Documentation](https://github.com/shironxn/zense?tab=readme-ov-file#api-documentation) 
+7. [﻿License](https://github.com/shironxn/zense?tab=readme-ov-file#license)﻿
 ## Project Goals
 ### 1. **Support Mental Health**
  Zense aims to create a platform where users can confide in an AI chatbot and engage in meaningful, empathetic conversations that foster mental well-being.
