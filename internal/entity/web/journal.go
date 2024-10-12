@@ -31,9 +31,9 @@ type JournalFindByID struct {
 type JournalUpdate struct {
 	ID         uint               `param:"id"`
 	UserID     uint               `json:"user_id"`
-	Mood       domain.JournalMood `validate:"oneof=happy good normal sad angry"`
+	Mood       domain.JournalMood `validate:"omitempty,oneof=happy good normal sad angry"`
 	Content    string
-	Visibility domain.JournalVisibility `validate:"oneof=private public"`
+	Visibility domain.JournalVisibility `omitempty,validate:"oneof=private public"`
 }
 
 type JournalDelete struct {

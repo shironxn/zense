@@ -32,7 +32,7 @@ type CommentUpdate struct {
 	ID         uint `param:"id"`
 	UserID     uint `json:"user_id"`
 	Content    string
-	Visibility domain.CommentVisibility `validate:"oneof=review public private"`
+	Visibility domain.CommentVisibility `validate:"omitempty,oneof=review public private"`
 }
 
 type CommentDelete struct {
