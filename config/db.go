@@ -36,6 +36,6 @@ func (d *Database) Connection() (*gorm.DB, error) {
 	)
 
 	return gorm.Open(postgres.Open(dsn), &gorm.Config{
-    PrepareStmt: false,
+    PrepareStmt: true,
   })
 }
