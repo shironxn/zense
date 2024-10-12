@@ -1,5 +1,3 @@
-# INVOFEST
-
 # Zense API
 **Zense** is a mental health support platform designed to provide a safe and private environment for users to express their thoughts and feelings. Users can confide in an AI chatbot, participate in forums, and engage with a supportive community. The platform emphasizes privacy, empathy, and accessibility for anyone seeking mental health support.
 
